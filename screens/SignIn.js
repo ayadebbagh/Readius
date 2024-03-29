@@ -17,42 +17,43 @@ import { getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 
-export default function App() {
+export default function SignIn() {
   return (
-    <KeyboardAwareScrollView
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      contentContainerStyle={styles.container}
-      scrollEnabled={false}
-    >
-      <Text style={styles.logo}>Readius.</Text>
-      <View style={styles.roundedRectangle}>
-        <TextInput
-          style={styles.emailInput}
-          keyboardType="email-address"
-          placeholder="Email"
-        />
-        <TextInput
-          style={styles.emailInput}
-          secureTextEntry={true}
-          placeholder="Password"
-        />
-      </View>
-      <TouchableOpacity
-        style={styles.signUpButton}
-        onPress={() => {
-          /* handle sign up here */
-        }}
+    <View style={{ flex: 1 }}>
+      <StatusBar style="light" backgroundColor="#2D2429" />
+      <KeyboardAwareScrollView
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        contentContainerStyle={styles.container}
+        scrollEnabled={false}
       >
-        <Text style={styles.buttonText}>Sign in</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => {}}>
-        <Text style={styles.createAccount}>
-          Don't have an account? Create one
-        </Text>
-      </TouchableOpacity>
-
-      <StatusBar style="auto" />
-    </KeyboardAwareScrollView>
+        <Text style={styles.logo}>Readius.</Text>
+        <View style={styles.roundedRectangle}>
+          <TextInput
+            style={styles.emailInput}
+            keyboardType="email-address"
+            placeholder="Email"
+          />
+          <TextInput
+            style={styles.passwordInput}
+            secureTextEntry={true}
+            placeholder="Password"
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.signUpButton}
+          onPress={() => {
+            /* handle sign up here */
+          }}
+        >
+          <Text style={styles.buttonText}>Sign in</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {}}>
+          <Text style={styles.createAccount}>
+            Don't have an account? Create one!
+          </Text>
+        </TouchableOpacity>
+      </KeyboardAwareScrollView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -78,6 +79,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   emailInput: {
+    marginTop: 2,
+    fontFamily: "GartSerif",
+    borderColor: "#C8C2D3",
+    borderWidth: 4,
+    borderRadius: 29,
+    padding: 10,
+    width: 267,
+    height: 46,
+  },
+  passwordInput: {
     marginTop: 15,
     fontFamily: "GartSerif",
     borderColor: "#C8C2D3",
