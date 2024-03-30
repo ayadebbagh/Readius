@@ -80,5 +80,6 @@ const styles = StyleSheet.create({
     height: 1200,
     top: 0,
     opacity: 1,
+    marginLeft: -5,
   },
 });
