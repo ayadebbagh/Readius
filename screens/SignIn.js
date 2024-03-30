@@ -21,7 +21,9 @@ export default function SignIn() {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="light" backgroundColor="#2D2429" />
-      <BackgroundAnimation imageSource={imageSource} />
+      <View style={{ position: "absolute", width: "100%", height: "100%" }}>
+        <BackgroundAnimation imageSource={imageSource} />
+      </View>
       <KeyboardAwareScrollView
         resetScrollToCoords={{ x: 0, y: 0 }}
         contentContainerStyle={styles.container}

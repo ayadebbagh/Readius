@@ -32,7 +32,7 @@ export default function BackgroundAnimation({ imageSource }) {
 
   const translateAnimation = translateValue.interpolate({
     inputRange: [INPUT_RANGE_START, INPUT_RANGE_END],
-    outputRange: [0, -1200],
+    outputRange: [0, -1194],
   });
 
   const AnimatedImage = Animated.createAnimatedComponent(ImageBackground);
