@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import React, { useEffect, useRef } from "react";
 import { Animated, Easing, ImageBackground } from "react-native";
 import {
@@ -38,36 +38,47 @@ export default function BackgroundAnimation({ imageSource }) {
   const AnimatedImage = Animated.createAnimatedComponent(ImageBackground);
 
   return (
-    <AnimatedImage
-      style={[
-        styles.background,
-        {
-          transform: [
-            {
-              translateX: translateAnimation,
-            },
-          ],
-        },
-      ]}
-      source={imageSource}
-    />
+    <View style={styles.container}>
+      <AnimatedImage
+        style={[
+          styles.background,
+          {
+            transform: [
+              {
+                translateX: translateAnimation,
+              },
+            ],
+          },
+        ]}
+        source={imageSource}
+      />
+      <AnimatedImage
+        style={[
+          styles.background,
+          {
+            transform: [
+              {
+                translateX: translateAnimation,
+              },
+            ],
+          },
+        ]}
+        source={imageSource}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+  },
+
   background: {
-    position: "absolute",
     width: 1200,
     height: 1200,
     top: 0,
     opacity: 1,
-    transform: [
-      {
-        translateX: 0,
-      },
-      {
-        translateY: 0,
-      },
-    ],
   },
 });
