@@ -3,24 +3,25 @@ import {
   StyleSheet,
   Text,
   View,
-  Animation,
+  Animated,
   TextInput,
   Platform,
   Button,
+  Image,
 } from "react-native";
 import React, { useRef, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
-import { useFonts } from "expo-font";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { collection, getDocs } from "firebase/firestore";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import BackgroundAnimation from "../Components/ImageBackground.js";
 
 export default function SignIn() {
+  const imageSource = require("../assets/images/backgroundSignIn.png");
+
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="light" backgroundColor="#2D2429" />
+      <BackgroundAnimation imageSource={imageSource} />
       <KeyboardAwareScrollView
         resetScrollToCoords={{ x: 0, y: 0 }}
         contentContainerStyle={styles.container}
@@ -59,7 +60,6 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2D2429",
     alignItems: "center",
     justifyContent: "center",
   },
