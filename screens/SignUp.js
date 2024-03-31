@@ -15,9 +15,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import BackgroundAnimation from "../Components/ImageBackground.js";
 
-export default function SignIn() {
-  const navigation = useNavigation();
-
+export default function SignUp() {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar style="light" backgroundColor="#2D2429" />
@@ -26,11 +24,11 @@ export default function SignIn() {
           position: "absolute",
           width: "100%",
           height: "100%",
-          backgroundColor: "#2D2429",
+          backgroundColor: "#C8C2D3",
         }}
       >
         <BackgroundAnimation
-          imageSource={require("../assets/images/backgroundSignIn.png")}
+          imageSource={require("../assets/images/backgroundSignUp.png")}
         />
       </View>
       <KeyboardAwareScrollView
@@ -52,17 +50,12 @@ export default function SignIn() {
           />
         </View>
         <TouchableOpacity
-          style={styles.signUpButton}
+          style={styles.createAccountButton}
           onPress={() => {
             /* handle sign up here */
           }}
         >
-          <Text style={styles.buttonText}>Sign in</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-          <Text style={styles.createAccount}>
-            Don't have an account? Create one!
-          </Text>
+          <Text style={styles.buttonText}>Create Account</Text>
         </TouchableOpacity>
       </KeyboardAwareScrollView>
     </View>
@@ -77,7 +70,7 @@ const styles = StyleSheet.create({
 
   logo: {
     fontFamily: "BrightCircle",
-    color: "#ECEFE8",
+    color: "#2D2429",
     fontSize: 75,
     marginBottom: 50,
   },
@@ -109,9 +102,9 @@ const styles = StyleSheet.create({
     width: 267,
     height: 46,
   },
-  signUpButton: {
+  createAccountButton: {
     elevation: 8,
-    backgroundColor: "#C8C2D3",
+    backgroundColor: "#2D2429",
     borderRadius: 32,
     paddingVertical: 11,
     paddingHorizontal: 70,
@@ -120,7 +113,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: "GartSerif",
     fontSize: 24,
-    color: "#2D2429",
+    color: "#ECEFE8",
   },
   createAccount: {
     fontFamily: "GartSerif",

@@ -53,7 +53,6 @@ export default function BackgroundAnimation({ imageSource }) {
           },
         ]}
         source={imageSource}
-        resizeMode="cover"
       />
       <AnimatedImage
         style={[
@@ -67,7 +66,6 @@ export default function BackgroundAnimation({ imageSource }) {
           },
         ]}
         source={imageSource}
-        resizeMode="cover"
       />
     </View>
   );
@@ -77,12 +75,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    marginTop: -20,
   },
 
   background: {
     width: 1200,
-    height: screenHeight + 100,
-    marginLeft: -5,
+    height: screenHeight,
+    marginLeft: -2.5,
   },
 });

@@ -14,6 +14,7 @@ import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import SignIn from "./screens/SignIn";
+import SignUp from "./screens/SignUp";
 
 const Stack = createStackNavigator();
 
@@ -32,7 +33,15 @@ export default function App() {
           name="SignIn"
           component={SignIn}
           options={{
-            title: "Home",
+            title: "SignIn",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{
+            title: "SignUp",
             headerShown: false,
           }}
         />
