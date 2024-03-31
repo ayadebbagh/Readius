@@ -9,6 +9,8 @@ import {
   ANIMATION_TO_VALUE,
   ANIMATION_DURATION,
 } from "../Helpers/constants";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
@@ -32,7 +34,7 @@ export default function BackgroundAnimation({ imageSource }) {
 
   const translateAnimation = translateValue.interpolate({
     inputRange: [INPUT_RANGE_START, INPUT_RANGE_END],
-    outputRange: [0, -1194],
+    outputRange: [0, -1193],
   });
 
   const AnimatedImage = Animated.createAnimatedComponent(ImageBackground);
@@ -51,6 +53,7 @@ export default function BackgroundAnimation({ imageSource }) {
           },
         ]}
         source={imageSource}
+        resizeMode="cover"
       />
       <AnimatedImage
         style={[
@@ -64,6 +67,7 @@ export default function BackgroundAnimation({ imageSource }) {
           },
         ]}
         source={imageSource}
+        resizeMode="cover"
       />
     </View>
   );
@@ -73,13 +77,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
+    marginTop: -20,
   },
 
   background: {
     width: 1200,
-    height: 1200,
-    top: 0,
-    opacity: 1,
+    height: screenHeight + 100,
     marginLeft: -5,
   },
 });
