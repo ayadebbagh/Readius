@@ -38,6 +38,7 @@ export default function SignUp() {
       >
         <Text style={styles.logo}>Readius.</Text>
         <View style={styles.roundedRectangle}>
+          <TextInput style={styles.UsernameInput} placeholder="Username" />
           <TextInput
             style={styles.emailInput}
             keyboardType="email-address"
@@ -76,16 +77,16 @@ const styles = StyleSheet.create({
   },
   roundedRectangle: {
     backgroundColor: "#ECEFE8",
-    height: 187,
+    height: 260,
     width: 330,
     borderRadius: 32,
     alignItems: "center",
     justifyContent: "center",
   },
   emailInput: {
-    marginTop: 2,
+    marginTop: 15,
     fontFamily: "GartSerif",
-    borderColor: "#C8C2D3",
+    borderColor: "#2D2429",
     borderWidth: 4,
     borderRadius: 29,
     padding: 10,
@@ -95,7 +96,16 @@ const styles = StyleSheet.create({
   passwordInput: {
     marginTop: 15,
     fontFamily: "GartSerif",
-    borderColor: "#C8C2D3",
+    borderColor: "#2D2429",
+    borderWidth: 4,
+    borderRadius: 29,
+    padding: 10,
+    width: 267,
+    height: 46,
+  },
+  UsernameInput: {
+    fontFamily: "GartSerif",
+    borderColor: "#2D2429",
     borderWidth: 4,
     borderRadius: 29,
     padding: 10,
