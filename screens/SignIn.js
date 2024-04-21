@@ -8,15 +8,23 @@ import {
   Platform,
   Button,
   Image,
+  Alert,
 } from "react-native";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import BackgroundAnimation from "../Components/ImageBackground.js";
+import { initializeApp } from "firebase/app";
+
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import FbApp from "../Helpers/FirebaseConfig.js";
+const db = getFirestore(FbApp);
 
 export default function SignIn() {
   const navigation = useNavigation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <View style={{ flex: 1 }}>
@@ -44,17 +52,33 @@ export default function SignIn() {
             style={styles.emailInput}
             keyboardType="email-address"
             placeholder="Email"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
           />
           <TextInput
             style={styles.passwordInput}
             secureTextEntry={true}
             placeholder="Password"
+            onChangeText={(text) => setPassword(text)}
+            value={password}
           />
         </View>
         <TouchableOpacity
           style={styles.signUpButton}
-          onPress={() => {
-            /* handle sign up here */
+          onPress={async () => {
+            const docRef = doc(db, "users", email);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const userData = docSnap.data();
+              if (userData.password === password) {
+                // User is signed in
+              } else {
+                Alert.alert("Your password is incorrect");
+              }
+            } else {
+              Alert.alert("You don't have an account :(");
+            }
           }}
         >
           <Text style={styles.buttonText}>Sign in</Text>
