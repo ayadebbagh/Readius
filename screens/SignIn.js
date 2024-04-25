@@ -72,7 +72,7 @@ export default function SignIn() {
             if (docSnap.exists()) {
               const userData = docSnap.data();
               if (userData.password === password) {
-                // User is signed in
+                navigation.navigate("HomeScreen", userData);
               } else {
                 Alert.alert("Your password is incorrect");
               }

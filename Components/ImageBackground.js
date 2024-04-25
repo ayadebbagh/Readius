@@ -14,7 +14,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-export default function BackgroundAnimation({ imageSource }) {
+function BackgroundAnimation({ imageSource }) {
   const initialValue = 0;
   const translateValue = useRef(new Animated.Value(initialValue)).current;
 
@@ -70,6 +70,7 @@ export default function BackgroundAnimation({ imageSource }) {
     </View>
   );
 }
+export default React.memo(BackgroundAnimation);
 
 const styles = StyleSheet.create({
   container: {

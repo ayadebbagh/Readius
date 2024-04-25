@@ -8,6 +8,7 @@ import {
   Platform,
   Button,
   Image,
+  Alert,
 } from "react-native";
 import React, { useRef, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
@@ -15,7 +16,16 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import BackgroundAnimation from "../Components/ImageBackground.js";
 import FbApp from "../Helpers/FirebaseConfig.js";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  docRef,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 // Use FbApp to get Firestore
 const db = getFirestore(FbApp);
@@ -24,6 +34,19 @@ export default function SignUp({ navigation }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  async function getUserByUsernameOrEmail(username, email) {
+    const userRef = collection(db, "users");
+    const usernameQuery = query(userRef, where("username", "==", username));
+    const emailQuery = query(userRef, where("email", "==", email));
+    const usernameSnapshot = await getDocs(usernameQuery);
+    const emailSnapshot = await getDocs(emailQuery);
+
+    if (!usernameSnapshot.empty || !emailSnapshot.empty) {
+      return true; // User exists
+    } else {
+      return false; // User does not exist
+    }
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -71,20 +94,47 @@ export default function SignUp({ navigation }) {
         <TouchableOpacity
           style={styles.createAccountButton}
           onPress={async () => {
-            try {
-              const docRef = await setDoc(doc(db, "users", username), {
-                username: username,
-                email: email,
-                password: password,
-              });
-              console.log("Document written with ID: ", username);
-              navigation.goBack();
-            } catch (e) {
-              console.error("Error adding document: ", e);
+            if (username && email && password) {
+              try {
+                // Check if an account with the same username or email already exists
+                const existingUser = await getUserByUsernameOrEmail(
+                  username,
+                  email
+                );
+
+                if (existingUser) {
+                  // If an account already exists, show an error message
+                  Alert.alert(
+                    "Error",
+                    "An account with that username or email already exists."
+                  );
+                } else {
+                  // If no account exists, create a new account
+                  const docRef = await setDoc(doc(db, "users", username), {
+                    username: username,
+                    email: email,
+                    password: password,
+                  });
+                  console.log("Document written with ID: ", username);
+                  navigation.goBack();
+                }
+              } catch (e) {
+                console.error("Error adding document: ", e);
+              }
+            } else {
+              Alert.alert("Error", "Please fill all fields.");
             }
           }}
         >
           <Text style={styles.buttonText}>Create Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text
+            style={styles.return}
+            onPress={() => navigation.navigate("SignIn")}
+          >
+            Return to sign in
+          </Text>
         </TouchableOpacity>
       </KeyboardAwareScrollView>
     </View>
@@ -157,6 +207,12 @@ const styles = StyleSheet.create({
     fontFamily: "GartSerif",
     fontSize: 16,
     color: "#ECEFE8",
+    marginTop: 15,
+  },
+  return: {
+    fontFamily: "GartSerif",
+    fontSize: 18,
+    color: "#2D2429",
     marginTop: 15,
   },
 });
