@@ -16,6 +16,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import SignIn from "./screens/SignIn";
 import SignUp from "./screens/SignUp";
 import HomeScreen from "./screens/HomeScreen";
+import ProfileSetUp from "./screens/ProfileSetUp";
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     BrightCircle: require("./assets/fonts/Bright-Circle-Font-by-Keithzo-BF65df84b7c2f07.otf"),
     GartSerif: require("./assets/fonts/gartseriftrial-medium.otf"),
+    GartSerifBold: require("./assets/fonts/gartseriftrial-bold.otf"),
   });
   if (!fontsLoaded) {
     return <Text>Loading...</Text>;
@@ -51,6 +53,14 @@ export default function App() {
           component={HomeScreen}
           options={{
             title: "HomeScreen",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ProfileSetUp"
+          component={ProfileSetUp}
+          options={{
+            title: "ProfileSetUp",
             headerShown: false,
           }}
         />

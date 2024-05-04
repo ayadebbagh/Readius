@@ -27,10 +27,9 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-// Use FbApp to get Firestore
 const db = getFirestore(FbApp);
 
-export default function SignUp({ navigation }) {
+export default function SignUp({ navigation, route }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,9 +41,9 @@ export default function SignUp({ navigation }) {
     const emailSnapshot = await getDocs(emailQuery);
 
     if (!usernameSnapshot.empty || !emailSnapshot.empty) {
-      return true; // User exists
+      return true;
     } else {
-      return false; // User does not exist
+      return false;
     }
   }
 
@@ -131,7 +130,9 @@ export default function SignUp({ navigation }) {
         <TouchableOpacity>
           <Text
             style={styles.return}
-            onPress={() => navigation.navigate("SignIn")}
+            onPress={() =>
+              navigation.navigate("SignIn", { username: username })
+            }
           >
             Return to sign in
           </Text>

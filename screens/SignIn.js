@@ -17,11 +17,18 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import BackgroundAnimation from "../Components/ImageBackground.js";
 import { initializeApp } from "firebase/app";
 
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDocs,
+  query,
+  collection,
+  where,
+} from "firebase/firestore";
 import FbApp from "../Helpers/FirebaseConfig.js";
 const db = getFirestore(FbApp);
 
-export default function SignIn() {
+export default function SignIn(route) {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,13 +73,16 @@ export default function SignIn() {
         <TouchableOpacity
           style={styles.signUpButton}
           onPress={async () => {
-            const docRef = doc(db, "users", email);
-            const docSnap = await getDoc(docRef);
+            const q = query(
+              collection(db, "users"),
+              where("email", "==", email)
+            );
+            const querySnapshot = await getDocs(q);
 
-            if (docSnap.exists()) {
-              const userData = docSnap.data();
+            if (!querySnapshot.empty) {
+              const userData = querySnapshot.docs[0].data();
               if (userData.password === password) {
-                navigation.navigate("HomeScreen", userData);
+                navigation.navigate("HomeScreen", { email: email });
               } else {
                 Alert.alert("Your password is incorrect");
               }
