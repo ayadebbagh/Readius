@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
+import * as ImagePicker from "expo-image-picker";
 
 // Use FbApp to get Firestore
 const db = getFirestore(FbApp);
@@ -25,9 +26,41 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 export default function ProfileSetUp({ navigation, route }) {
+  const [file, setFile] = useState(null);
+  const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
   const email = route.params?.email;
   console.log("email:", email);
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission Denied",
+        `Sorry, we need camera roll permission to upload images.`
+      );
+    } else {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log(result);
+
+      if (!result.cancelled) {
+        setImageUri(result.assets[0].uri); // Set imageUri with the picked image URI
+        console.log("Image URI:", result.assets[0].uri); // Set imageUri with the picked image URI
+        setError(null);
+        console.log("Image URI:", result.uri);
+        console.log("Image picking error:", result.error);
+        console.log("Image picking result:", result);
+      }
+    }
+  };
 
   useEffect(() => {
     async function fetchUserData() {
@@ -49,11 +82,15 @@ export default function ProfileSetUp({ navigation, route }) {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/images/defaultPfp.jpeg")}
+        source={
+          imageUri
+            ? { uri: imageUri }
+            : require("../assets/images/defaultPfp.jpeg")
+        }
         style={styles.profilePic}
       />
       <TouchableOpacity style={styles.roundedRectangle} />
-      <TouchableOpacity style={styles.plusSign}>
+      <TouchableOpacity style={styles.plusSign} onPress={pickImage}>
         <Image
           source={require("../assets/images/plusSign.png")}
           style={{ width: 40, height: 40 }}
