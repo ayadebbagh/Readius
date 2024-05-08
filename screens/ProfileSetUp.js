@@ -7,7 +7,6 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import LottieView from "lottie-react-native";
 import {
   getFirestore,
   doc,
@@ -15,6 +14,7 @@ import {
   query,
   where,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
 import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
@@ -26,14 +26,14 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 export default function ProfileSetUp({ navigation, route }) {
-  const [file, setFile] = useState(null);
+  const [rectangleImageUri, setRectangleImageUri] = useState(null);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const email = route.params?.email;
   console.log("email:", email);
 
-  const pickImage = async () => {
+  const pickImagepfp = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== "granted") {
@@ -52,13 +52,39 @@ export default function ProfileSetUp({ navigation, route }) {
       console.log(result);
 
       if (!result.cancelled) {
-        setImageUri(result.assets[0].uri); // Set imageUri with the picked image URI
-        console.log("Image URI:", result.assets[0].uri); // Set imageUri with the picked image URI
+        setImageUri(result.assets[0].uri);
+        console.log("Image URI:", result.assets[0].uri);
         setError(null);
-        console.log("Image URI:", result.uri);
-        console.log("Image picking error:", result.error);
-        console.log("Image picking result:", result);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (document) => {
+          const userRef = doc(db, "users", document.id);
+          await updateDoc(userRef, { profilePicture: result.assets[0].uri });
+        });
       }
+    }
+  };
+  const pickImageRectangle = async () => {
+    console.log("pickImageRectangle called");
+    let resultBanner = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(resultBanner);
+
+    if (!resultBanner.cancelled) {
+      setRectangleImageUri(resultBanner.assets[0].uri);
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (document) => {
+        const userRef = doc(db, "users", document.id);
+        await updateDoc(userRef, { bannerPicture: resultBanner.assets[0].uri });
+      });
     }
   };
 
@@ -69,8 +95,10 @@ export default function ProfileSetUp({ navigation, route }) {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         console.log(`Fetched user data: ${doc.id} => ${doc.data()}`);
-        console.log("Username:", doc.data().username); // Add this line
+        console.log("Username:", doc.data().username);
         setUser(doc.data());
+        setImageUri(doc.data().profilePicture);
+        setRectangleImageUri(doc.data().rectangleImage);
       });
     }
 
@@ -89,8 +117,17 @@ export default function ProfileSetUp({ navigation, route }) {
         }
         style={styles.profilePic}
       />
-      <TouchableOpacity style={styles.roundedRectangle} />
-      <TouchableOpacity style={styles.plusSign} onPress={pickImage}>
+      <TouchableOpacity
+        style={styles.roundedRectangle}
+        onPress={pickImageRectangle}
+      >
+        <Image
+          source={{ uri: rectangleImageUri }}
+          style={styles.roundedRectangleImage}
+          onLoad={() => console.log("Image loaded")}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.plusSign} onPress={pickImagepfp}>
         <Image
           source={require("../assets/images/plusSign.png")}
           style={{ width: 40, height: 40 }}
@@ -136,5 +173,10 @@ const styles = StyleSheet.create({
     fontFamily: "GartSerifBold",
     fontSize: 20,
     color: "#2D2429",
+  },
+  roundedRectangleImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
   },
 });
