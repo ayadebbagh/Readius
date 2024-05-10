@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  PixelRatio,
 } from "react-native";
 import {
   getFirestore,
@@ -143,36 +144,51 @@ export default function ProfileSetUp({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={
-          imageUri
-            ? { uri: imageUri }
-            : require("../assets/images/defaultPfp.jpeg")
-        }
-        style={styles.profilePic}
-      />
-      <TouchableOpacity
-        style={styles.roundedRectangle}
-        onPress={pickImageRectangle}
-      >
+      <View style={styles.roundedRectangleContainer}>
         <Image
-          source={{ uri: rectangleImageUri }}
-          style={styles.roundedRectangleImage}
-          onLoad={() => console.log("Image loaded")}
+          source={
+            imageUri
+              ? { uri: imageUri }
+              : require("../assets/images/defaultPfp.jpeg")
+          }
+          style={styles.profilePic}
+        />
+        <TouchableOpacity
+          style={styles.roundedRectangle}
+          onPress={pickImageRectangle}
+        >
+          <Image
+            source={{ uri: rectangleImageUri }}
+            style={styles.roundedRectangleImage}
+            onLoad={() => console.log("Image loaded")}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.plusSign} onPress={pickImagepfp}>
+          <Image
+            source={require("../assets/images/plusSign.png")}
+            style={{ width: 40, height: 40 }}
+          />
+        </TouchableOpacity>
+        <Text style={styles.usernameText}>@{user ? user.username : ""}</Text>
+      </View>
+      <TouchableOpacity style={styles.homeIcon}>
+        <Image
+          source={require("../assets/images/homeicon.png")}
+          style={{ width: 55, height: 55 }}
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.plusSign} onPress={pickImagepfp}>
+      <TouchableOpacity style={styles.bookIcon}>
         <Image
-          source={require("../assets/images/plusSign.png")}
-          style={{ width: 40, height: 40 }}
+          source={require("../assets/images/bookicon.png")}
+          style={{ width: 55, height: 55 }}
         />
       </TouchableOpacity>
-      <Text style={styles.usernameText}>@{user ? user.username : ""}</Text>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
+    position: "relative",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -182,19 +198,26 @@ const styles = StyleSheet.create({
     height: 120,
     width: 120,
     borderRadius: 125,
-    marginTop: -350,
-    marginBottom: -70,
+    position: "absolute",
+    top: screenHeight * 0.25 - 60, // half of profilePic height
     zIndex: 1,
   },
+  roundedRectangleContainer: {
+    position: "absolute",
+    top: 0,
+    alignItems: "center",
+    width: "100%",
+  },
+
   roundedRectangle: {
     backgroundColor: "#C8C2D3",
-    height: screenHeight * 0.35,
+    height: screenHeight * 0.25,
     width: screenWidth,
-    borderRadius: 32,
+    borderRadius: 60,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: -280,
   },
+
   plusSign: {
     height: 30,
     width: 30,
@@ -212,5 +235,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 10,
+  },
+  homeIcon: {
+    position: "absolute",
+    left: 30,
+    bottom: 30,
+    zIndex: 2,
+  },
+  bookIcon: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    zIndex: 2,
   },
 });
