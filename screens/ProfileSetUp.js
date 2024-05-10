@@ -177,7 +177,10 @@ export default function ProfileSetUp({ navigation, route }) {
           style={{ width: 55, height: 55 }}
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.bookIcon}>
+      <TouchableOpacity
+        style={styles.bookIcon}
+        onPress={() => navigation.navigate("AddBookScreen", { email: email })}
+      >
         <Image
           source={require("../assets/images/bookicon.png")}
           style={{ width: 55, height: 55 }}
@@ -234,7 +237,7 @@ const styles = StyleSheet.create({
   roundedRectangleImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 10,
+    borderRadius: 30,
   },
   homeIcon: {
     position: "absolute",

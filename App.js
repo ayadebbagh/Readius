@@ -17,6 +17,7 @@ import SignIn from "./screens/SignIn";
 import SignUp from "./screens/SignUp";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileSetUp from "./screens/ProfileSetUp";
+import AddBookScreen from "./screens/AddBookScreen";
 
 const Stack = createStackNavigator();
 
@@ -31,7 +32,10 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignIn">
+      <Stack.Navigator
+        initialRouteName="SignIn"
+        screenOptions={{ gestureEnabled: false }}
+      >
         <Stack.Screen
           name="SignIn"
           component={SignIn}
@@ -61,6 +65,14 @@ export default function App() {
           component={ProfileSetUp}
           options={{
             title: "ProfileSetUp",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="AddBookScreen"
+          component={AddBookScreen}
+          options={{
+            title: "AddBookScreen",
             headerShown: false,
           }}
         />
