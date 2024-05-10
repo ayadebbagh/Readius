@@ -16,9 +16,16 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 
 // Use FbApp to get Firestore
 const db = getFirestore(FbApp);
@@ -33,6 +40,15 @@ export default function ProfileSetUp({ navigation, route }) {
   const email = route.params?.email;
   console.log("email:", email);
 
+  const resizeImage = async (uri) => {
+    const manipResult = await ImageManipulator.manipulateAsync(
+      uri,
+      [{ resize: { width: 500, height: 500 } }],
+      { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
+    );
+    return manipResult.uri;
+  };
+
   const pickImagepfp = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -42,26 +58,18 @@ export default function ProfileSetUp({ navigation, route }) {
         `Sorry, we need camera roll permission to upload images.`
       );
     } else {
-      const result = await ImagePicker.launchImageLibraryAsync({
+      let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        aspect: [4, 3],
+        aspect: [1, 1],
         quality: 1,
       });
 
       console.log(result);
 
       if (!result.cancelled) {
-        setImageUri(result.assets[0].uri);
-        console.log("Image URI:", result.assets[0].uri);
-        setError(null);
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", email));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach(async (document) => {
-          const userRef = doc(db, "users", document.id);
-          await updateDoc(userRef, { profilePicture: result.assets[0].uri });
-        });
+        const resizedUri = await resizeImage(result.assets[0].uri);
+        uploadImage(resizedUri, "profilePictures", setImageUri, email);
       }
     }
   };
@@ -77,17 +85,43 @@ export default function ProfileSetUp({ navigation, route }) {
     console.log(resultBanner);
 
     if (!resultBanner.cancelled) {
-      setRectangleImageUri(resultBanner.assets[0].uri);
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("email", "==", email));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(async (document) => {
-        const userRef = doc(db, "users", document.id);
-        await updateDoc(userRef, { bannerPicture: resultBanner.assets[0].uri });
-      });
+      const resizedUri = await resizeImage(resultBanner.assets[0].uri);
+      uploadImage(resizedUri, "banners", setRectangleImageUri, email);
     }
   };
 
+  const uploadImage = async (uri, path, setImageUriFunc, email) => {
+    const storage = getStorage();
+    const uniqueID = `${email}_${path}`; // Unique ID is now email_pfp or email_banner
+    const storageRef = ref(storage, `${path}/${uniqueID}`);
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const uploadTask = uploadBytesResumable(storageRef, blob);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+      },
+      (error) => {
+        console.log("Upload failed:", error);
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        console.log("File available at", downloadURL);
+        setImageUriFunc(downloadURL);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (document) => {
+          const userRef = doc(db, "users", document.id);
+          await updateDoc(userRef, { [`${path}Picture`]: downloadURL });
+        });
+      }
+    );
+  };
   useEffect(() => {
     async function fetchUserData() {
       const usersRef = collection(db, "users");
@@ -97,8 +131,8 @@ export default function ProfileSetUp({ navigation, route }) {
         console.log(`Fetched user data: ${doc.id} => ${doc.data()}`);
         console.log("Username:", doc.data().username);
         setUser(doc.data());
-        setImageUri(doc.data().profilePicture);
-        setRectangleImageUri(doc.data().rectangleImage);
+        setImageUri(doc.data().profilePicturesPicture);
+        setRectangleImageUri(doc.data().bannersPicture);
       });
     }
 
