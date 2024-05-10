@@ -50,6 +50,12 @@ export default function AddBookScreen({ navigation, route }) {
       <ScrollView horizontal style={styles.scrollView}>
         <BookAddComp style={styles.bookAdd} />
       </ScrollView>
+      <TouchableOpacity
+        style={styles.swapButton}
+        onPress={() => navigation.navigate("ProfileSetUp")}
+      >
+        <Text style={styles.swapText}>Get Swapping!</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -76,5 +82,19 @@ const styles = StyleSheet.create({
     left: 25,
     top: 180,
   },
-  bookAdd: {},
+  swapButton: {
+    width: 240,
+    height: 55,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#2D2429",
+    borderRadius: 30,
+    position: "absolute",
+    bottom: 60,
+  },
+  swapText: {
+    fontFamily: "GartSerif",
+    fontSize: 24,
+    color: "#ECEFE8",
+  },
 });
