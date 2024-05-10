@@ -1,4 +1,4 @@
-##TODO:
+## TODO:
 
 - Fixes:
   - block navigation from manually going back to sign up unless user logs out ✅
