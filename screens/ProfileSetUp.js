@@ -92,7 +92,7 @@ export default function ProfileSetUp({ navigation, route }) {
 
   const uploadImage = async (uri, path, setImageUriFunc, email) => {
     const storage = getStorage();
-    const uniqueID = `${email}_${path}`; // Unique ID is now email_pfp or email_banner
+    const uniqueID = `${email}_${path}`;
     const storageRef = ref(storage, `${path}/${uniqueID}`);
     const response = await fetch(uri);
     const blob = await response.blob();

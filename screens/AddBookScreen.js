@@ -16,8 +16,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import BackgroundAnimation from "../Components/ImageBackground.js";
-import FbApp from "../Helpers/FirebaseConfig.js";
+import { FbApp } from "../Helpers/FirebaseConfig.js";
+
 import {
   getFirestore,
   setDoc,
@@ -27,6 +27,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -37,50 +38,76 @@ import {
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-
 import BookAddComp from "../Components/BookAddComp.js";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
+const db = getFirestore(FbApp);
 
 export default function AddBookScreen({ navigation, route }) {
   const email = route.params?.email;
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
-  console.log(email);
+  const [downloadURL, setDownloadURL] = useState("");
+  function handleDownloadURL(url) {
+    setDownloadURL(url);
+  }
   return (
     <View style={styles.container}>
-      <Text style={styles.addBookText}>Add a book!</Text>
-
-      <BookAddComp style={styles.book} email={email} />
-
-      <TouchableOpacity
-        style={styles.swapButton}
-        onPress={() => navigation.navigate("ProfileSetUp", { email: email })}
+      <KeyboardAwareScrollView
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        contentContainerStyle={styles.container}
+        scrollEnabled={false}
       >
-        <Text style={styles.swapText}>Get Swapping!</Text>
-      </TouchableOpacity>
+        <Text style={styles.addBookText}>Add a book!</Text>
 
-      <TextInput
-        style={styles.TitleInput}
-        placeholder="Title"
-        onChangeText={(text) => setTitle(text)}
-        value={title}
-      />
-      <TextInput
-        style={styles.AuthorInput}
-        placeholder="Author"
-        onChangeText={(text) => setAuthor(text)}
-        value={author}
-      />
-      <TextInput
-        style={styles.DescriptionInput}
-        placeholder="Description"
-        onChangeText={(text) => setDescription(text)}
-        multiline={true}
-        value={description}
-      />
+        <BookAddComp
+          style={styles.book}
+          email={email}
+          title={title}
+          onDownloadURL={handleDownloadURL}
+        />
+
+        <TouchableOpacity
+          style={styles.swapButton}
+          onPress={async () => {
+            console.log(`email: ${email}`);
+            await setDoc(
+              doc(db, "users", email, "books", title + "_" + email),
+              {
+                title: title,
+                author: author,
+                description: description,
+                URL: downloadURL,
+              }
+            );
+            navigation.navigate("ProfileSetUp", { email: email });
+          }}
+        >
+          <Text style={styles.swapText}>Get Swapping!</Text>
+        </TouchableOpacity>
+
+        <TextInput
+          style={styles.TitleInput}
+          placeholder="Title"
+          onChangeText={(text) => setTitle(text)}
+          value={title}
+        />
+        <TextInput
+          style={styles.AuthorInput}
+          placeholder="Author"
+          onChangeText={(text) => setAuthor(text)}
+          value={author}
+        />
+        <TextInput
+          style={styles.DescriptionInput}
+          placeholder="Description"
+          onChangeText={(text) => setDescription(text)}
+          multiline={true}
+          value={description}
+        />
+      </KeyboardAwareScrollView>
     </View>
   );
 }

@@ -109,7 +109,7 @@ export default function SignUp({ navigation, route }) {
                   );
                 } else {
                   // If no account exists, create a new account
-                  const docRef = await setDoc(doc(db, "users", username), {
+                  const docRef = await setDoc(doc(db, "users", email), {
                     username: username,
                     email: email,
                     password: password,
