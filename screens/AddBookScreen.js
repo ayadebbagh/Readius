@@ -45,11 +45,15 @@ const screenHeight = Dimensions.get("window").height;
 
 export default function AddBookScreen({ navigation, route }) {
   const email = route.params?.email;
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [description, setDescription] = useState("");
+  console.log(email);
   return (
     <View style={styles.container}>
       <Text style={styles.addBookText}>Add a book!</Text>
       <ScrollView horizontal style={styles.scrollView}>
-        <BookAddComp style={styles.bookAdd} />
+        <BookAddComp style={styles.bookAdd} email={email} />
       </ScrollView>
       <TouchableOpacity
         style={styles.swapButton}
@@ -57,6 +61,27 @@ export default function AddBookScreen({ navigation, route }) {
       >
         <Text style={styles.swapText}>Get Swapping!</Text>
       </TouchableOpacity>
+      <View style={styles.infoContainer}>
+        <TextInput
+          style={styles.TitleInput}
+          placeholder="Title"
+          onChangeText={(text) => setTitle(text)}
+          value={title}
+        />
+        <TextInput
+          style={styles.AuthorInput}
+          placeholder="Author"
+          onChangeText={(text) => setAuthor(text)}
+          value={author}
+        />
+        <TextInput
+          style={styles.DescriptionInput}
+          placeholder="Description"
+          onChangeText={(text) => setDescription(text)}
+          multiline={true}
+          value={description}
+        />
+      </View>
     </View>
   );
 }
@@ -67,6 +92,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#C8C2D3",
+  },
+  infoContainer: {
+    left: 25,
+    top: 440,
+    position: "absolute",
   },
   addBookText: {
     fontFamily: "GartSerifBold",
@@ -97,5 +127,41 @@ const styles = StyleSheet.create({
     fontFamily: "GartSerif",
     fontSize: 24,
     color: "#ECEFE8",
+  },
+  TitleInput: {
+    marginTop: 15,
+    fontFamily: "GartSerif",
+    fontSize: 18,
+    borderColor: "#2D2429",
+    borderWidth: 4,
+    borderRadius: 29,
+    padding: 10,
+    width: 350,
+    height: 46,
+    backgroundColor: "#ECEFE8",
+  },
+  AuthorInput: {
+    marginTop: 15,
+    fontFamily: "GartSerif",
+    fontSize: 18,
+    borderColor: "#2D2429",
+    borderWidth: 4,
+    borderRadius: 29,
+    padding: 10,
+    width: 350,
+    height: 46,
+    backgroundColor: "#ECEFE8",
+  },
+  DescriptionInput: {
+    marginTop: 15,
+    fontFamily: "GartSerif",
+    fontSize: 18,
+    borderColor: "#2D2429",
+    borderWidth: 4,
+    borderRadius: 29,
+    padding: 10,
+    width: 350,
+    height: 140,
+    backgroundColor: "#ECEFE8",
   },
 });
