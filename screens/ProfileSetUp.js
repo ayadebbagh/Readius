@@ -35,7 +35,6 @@ const screenHeight = Dimensions.get("window").height;
 
 export default function ProfileSetUp({ navigation, route }) {
   const [rectangleImageUri, setRectangleImageUri] = useState(null);
-  const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const email = route.params?.email;

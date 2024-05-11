@@ -44,6 +44,7 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 export default function AddBookScreen({ navigation, route }) {
+  const email = route.params?.email;
   return (
     <View style={styles.container}>
       <Text style={styles.addBookText}>Add a book!</Text>
@@ -52,7 +53,7 @@ export default function AddBookScreen({ navigation, route }) {
       </ScrollView>
       <TouchableOpacity
         style={styles.swapButton}
-        onPress={() => navigation.navigate("ProfileSetUp")}
+        onPress={() => navigation.navigate("ProfileSetUp", { email: email })}
       >
         <Text style={styles.swapText}>Get Swapping!</Text>
       </TouchableOpacity>
