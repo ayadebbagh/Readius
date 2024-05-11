@@ -52,36 +52,35 @@ export default function AddBookScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       <Text style={styles.addBookText}>Add a book!</Text>
-      <ScrollView horizontal style={styles.scrollView}>
-        <BookAddComp style={styles.bookAdd} email={email} />
-      </ScrollView>
+
+      <BookAddComp style={styles.book} email={email} />
+
       <TouchableOpacity
         style={styles.swapButton}
         onPress={() => navigation.navigate("ProfileSetUp", { email: email })}
       >
         <Text style={styles.swapText}>Get Swapping!</Text>
       </TouchableOpacity>
-      <View style={styles.infoContainer}>
-        <TextInput
-          style={styles.TitleInput}
-          placeholder="Title"
-          onChangeText={(text) => setTitle(text)}
-          value={title}
-        />
-        <TextInput
-          style={styles.AuthorInput}
-          placeholder="Author"
-          onChangeText={(text) => setAuthor(text)}
-          value={author}
-        />
-        <TextInput
-          style={styles.DescriptionInput}
-          placeholder="Description"
-          onChangeText={(text) => setDescription(text)}
-          multiline={true}
-          value={description}
-        />
-      </View>
+
+      <TextInput
+        style={styles.TitleInput}
+        placeholder="Title"
+        onChangeText={(text) => setTitle(text)}
+        value={title}
+      />
+      <TextInput
+        style={styles.AuthorInput}
+        placeholder="Author"
+        onChangeText={(text) => setAuthor(text)}
+        value={author}
+      />
+      <TextInput
+        style={styles.DescriptionInput}
+        placeholder="Description"
+        onChangeText={(text) => setDescription(text)}
+        multiline={true}
+        value={description}
+      />
     </View>
   );
 }
@@ -110,7 +109,7 @@ const styles = StyleSheet.create({
     height: 250,
     width: screenWidth,
     position: "absolute",
-    left: 25,
+
     top: 180,
   },
   swapButton: {

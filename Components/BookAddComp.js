@@ -30,8 +30,6 @@ import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import * as Random from "expo-random";
-import * as Crypto from "expo-crypto";
 
 function BookAddComp(props) {
   const email = props.email;
@@ -63,6 +61,10 @@ function BookAddComp(props) {
       });
 
       console.log(result);
+
+      if (!resultBanner.cancelled) {
+        const resizedUri = await resizeImage(resultBanner.assets[0].uri);
+      }
     }
   };
 
@@ -85,7 +87,7 @@ export default React.memo(BookAddComp);
 
 const styles = StyleSheet.create({
   rectangle: {
-    width: 190,
+    width: 245,
     height: 245,
     backgroundColor: "#ECEFE8",
     borderColor: "#2D2429",
