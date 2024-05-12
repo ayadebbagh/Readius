@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   PixelRatio,
+  ActivityIndicator,
 } from "react-native";
 import {
   getFirestore,
@@ -30,6 +31,7 @@ import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+
 const db = getFirestore(FbApp);
 
 function BookAddComp(props) {
@@ -37,6 +39,11 @@ function BookAddComp(props) {
   const title = props.title;
   const [imageUri, setImageUri] = useState(null);
   const [downloadURL, setDownloadURL] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+
+  const handleImageLoad = () => {
+    setLoading(false);
+  };
 
   const resizeImage = async (uri) => {
     const manipResult = await ImageManipulator.manipulateAsync(
@@ -104,17 +111,30 @@ function BookAddComp(props) {
       }
     );
   };
+  useEffect(() => {
+    if (downloadURL) {
+      setLoading(true);
+      Image.prefetch(downloadURL)
+        .then(() => setLoading(false))
+        .catch(() => setLoading(false));
+    }
+  }, [downloadURL]);
 
   return (
     <View style={styles.rectangle}>
       <TouchableOpacity onPress={pickImageBook}>
-        {downloadURL ? (
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#2D2429" />
+        ) : downloadURL ? (
           <Image
             source={{ uri: downloadURL }}
             style={{ width: 238, height: 238, borderRadius: 30 }}
           />
         ) : (
-          <Image source={require("../assets/images/burgundyplus.png")} />
+          <Image
+            source={require("../assets/images/burgundyplus.png")}
+            style={{ width: 50, height: 50 }}
+          />
         )}
       </TouchableOpacity>
     </View>
