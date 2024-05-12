@@ -128,9 +128,13 @@ function BookAddComp(props) {
           <Image
             source={{ uri: downloadURL }}
 <<<<<<< HEAD
+<<<<<<< HEAD
             style={{ width: "100%", height: "100%" }}
             onError={(error) => console.log(error)}
             onLoad={console.log("image url lol" + downloadURL)}
+=======
+            style={{ width: 238, height: 238, borderRadius: 30 }}
+>>>>>>> 84ad56b774ded716a4c96f1184e514c3d0e7a891
 =======
             style={{ width: 238, height: 238, borderRadius: 30 }}
 >>>>>>> 84ad56b774ded716a4c96f1184e514c3d0e7a891
