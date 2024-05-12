@@ -89,6 +89,7 @@ export default function AddBookScreen({ navigation, route }) {
               author: author,
               description: description,
               imageUri: downloadURL,
+              email: email,
             };
             addBook(newBook);
           }}

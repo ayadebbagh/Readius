@@ -48,6 +48,16 @@ export default function ProfileSetUp({ navigation, route }) {
   const email = route.params?.email;
   console.log("email:", email);
   console.log(imageUri);
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const booksCollection = collection(db, "users", email, "books");
+      const booksSnapshot = await getDocs(booksCollection);
+      const booksList = booksSnapshot.docs.map((doc) => doc.data());
+      setBooks(booksList);
+    };
+
+    fetchBooks();
+  }, []);
 
   const resizeImage = async (uri) => {
     const manipResult = await ImageManipulator.manipulateAsync(
@@ -186,7 +196,11 @@ export default function ProfileSetUp({ navigation, route }) {
         data={books}
         renderItem={({ item }) => (
           <View style={{ margin: 10 }}>
-            <LibraryBookComp book={item} />
+            <LibraryBookComp
+              book={item}
+              email={email}
+              navigation={navigation}
+            />
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}

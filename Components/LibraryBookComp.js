@@ -32,12 +32,28 @@ import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 const db = getFirestore(FbApp);
 
-function LibraryBookComp({ book }) {
+function LibraryBookComp(props) {
+  const { book, navigation } = props;
+  const email = props.email;
+  console.log("image url from librarybookcomp: " + book.URL);
+  console.log("title from librarybookcomp: " + book.title);
+  console.log("email from librarybookcomp: " + email);
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
-      <TouchableOpacity style={styles.rectangle}>
+      <TouchableOpacity
+        style={styles.rectangle}
+        onPress={() =>
+          navigation.navigate("BookDetailsScreen", {
+            title: book.title,
+            author: book.author,
+            description: book.description,
+            email: email,
+            bookURL: book.URL,
+          })
+        }
+      >
         <Image
-          source={{ uri: book.imageUri }}
+          source={{ uri: book.URL }}
           style={{ width: 143, height: 143, borderRadius: 30 }}
         />
       </TouchableOpacity>
