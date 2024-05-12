@@ -12,7 +12,7 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
@@ -46,7 +46,7 @@ const db = getFirestore(FbApp);
 
 export default function AddBookScreen({ navigation, route }) {
   const email = route.params?.email;
-  const { addBook } = route.params;
+  const { addBook } = useContext(BookContext);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
@@ -54,6 +54,9 @@ export default function AddBookScreen({ navigation, route }) {
   function handleDownloadURL(url) {
     setDownloadURL(url);
   }
+  useEffect(() => {
+    console.log(`Title: ${title}`);
+  }, [title]);
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView

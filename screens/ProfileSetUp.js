@@ -220,7 +220,6 @@ export default function ProfileSetUp({ navigation, route }) {
         onPress={() =>
           navigation.navigate("AddBookScreen", {
             email: email,
-            addBook: handleAddBook,
           })
         }
       >

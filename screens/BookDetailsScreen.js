@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     left: -170,
     top: 20,
     position: "absolute",
+    width: "90%",
   },
   arrow: {
     bottom: -180,
