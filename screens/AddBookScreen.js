@@ -189,5 +189,6 @@ const styles = StyleSheet.create({
     width: 350,
     height: 140,
     backgroundColor: "#ECEFE8",
+    textAlignVertical: "top",
   },
 });

@@ -111,8 +111,7 @@ function BookAddComp(props) {
         {downloadURL ? (
           <Image
             source={{ uri: downloadURL }}
-            style={{ width: "100%", height: "100%" }}
-            onError={(error) => console.log(error)}
+            style={{ width: 238, height: 238, borderRadius: 30 }}
           />
         ) : (
           <Image source={require("../assets/images/burgundyplus.png")} />

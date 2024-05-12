@@ -39,6 +39,7 @@ export default function ProfileSetUp({ navigation, route }) {
   const [imageUri, setImageUri] = useState(null);
   const email = route.params?.email;
   console.log("email:", email);
+  console.log(imageUri);
 
   const resizeImage = async (uri) => {
     const manipResult = await ImageManipulator.manipulateAsync(
