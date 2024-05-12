@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   PixelRatio,
+  FlatList,
 } from "react-native";
 import {
   getFirestore,
@@ -27,18 +28,36 @@ import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+import LibraryBookComp from "../Components/LibraryBookComp.js";
 
 // Use FbApp to get Firestore
 const db = getFirestore(FbApp);
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
+const bookWidth = 150; // Change this to the width of your LibraryBookComp component
+const spaceBetweenBooks = 10;
+const numColumns = Math.floor(
+  (screenWidth - spaceBetweenBooks) / (bookWidth + spaceBetweenBooks)
+);
 
 export default function ProfileSetUp({ navigation, route }) {
   const [rectangleImageUri, setRectangleImageUri] = useState(null);
   const [user, setUser] = useState(null);
   const [imageUri, setImageUri] = useState(null);
+  const [books, setBooks] = useState([]);
   const email = route.params?.email;
   console.log("email:", email);
+  console.log(imageUri);
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const booksCollection = collection(db, "users", email, "books");
+      const booksSnapshot = await getDocs(booksCollection);
+      const booksList = booksSnapshot.docs.map((doc) => doc.data());
+      setBooks(booksList);
+    };
+
+    fetchBooks();
+  }, []);
 
   const resizeImage = async (uri) => {
     const manipResult = await ImageManipulator.manipulateAsync(
@@ -140,6 +159,9 @@ export default function ProfileSetUp({ navigation, route }) {
       fetchUserData();
     }
   }, [email]);
+  const handleAddBook = (book) => {
+    setBooks((prevBooks) => [...prevBooks, book]);
+  };
 
   return (
     <View style={styles.container}>
@@ -170,6 +192,23 @@ export default function ProfileSetUp({ navigation, route }) {
         </TouchableOpacity>
         <Text style={styles.usernameText}>@{user ? user.username : ""}</Text>
       </View>
+      <FlatList
+        data={books}
+        renderItem={({ item }) => (
+          <View style={{ margin: 10 }}>
+            <LibraryBookComp
+              book={item}
+              email={email}
+              navigation={navigation}
+            />
+          </View>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal={false}
+        numColumns={numColumns}
+        contentContainerStyle={{ paddingHorizontal: spaceBetweenBooks / 2 }}
+        style={styles.flatlist}
+      />
       <TouchableOpacity style={styles.homeIcon}>
         <Image
           source={require("../assets/images/homeicon.png")}
@@ -178,7 +217,12 @@ export default function ProfileSetUp({ navigation, route }) {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.bookIcon}
-        onPress={() => navigation.navigate("AddBookScreen", { email: email })}
+        onPress={() =>
+          navigation.navigate("AddBookScreen", {
+            email: email,
+            addBook: handleAddBook,
+          })
+        }
       >
         <Image
           source={require("../assets/images/bookicon.png")}
@@ -249,5 +293,8 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 30,
     zIndex: 2,
+  },
+  flatlist: {
+    top: 320,
   },
 });

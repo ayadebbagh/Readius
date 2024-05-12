@@ -18,6 +18,7 @@ import SignUp from "./screens/SignUp";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileSetUp from "./screens/ProfileSetUp";
 import AddBookScreen from "./screens/AddBookScreen";
+import BookDetailsScreen from "./screens/BookDetailsScreen";
 
 const Stack = createStackNavigator();
 
@@ -73,6 +74,14 @@ export default function App() {
           component={AddBookScreen}
           options={{
             title: "AddBookScreen",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="BookDetailsScreen"
+          component={BookDetailsScreen}
+          options={{
+            title: "BookDetailsScreen",
             headerShown: false,
           }}
         />

@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   PixelRatio,
+  ActivityIndicator,
 } from "react-native";
 import {
   getFirestore,
@@ -30,13 +31,18 @@ import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+
 const db = getFirestore(FbApp);
 
 function BookAddComp(props) {
   const email = props.email;
   const title = props.title;
-  const [imageUri, setImageUri] = useState(null);
   const [downloadURL, setDownloadURL] = useState(null);
+  const [isLoading, setLoading] = useState(false);
+
+  const handleImageLoad = () => {
+    setLoading(false);
+  };
 
   const resizeImage = async (uri) => {
     const manipResult = await ImageManipulator.manipulateAsync(
@@ -66,7 +72,7 @@ function BookAddComp(props) {
 
       if (!result.cancelled) {
         const resizedUri = await resizeImage(result.assets[0].uri);
-        uploadImage(resizedUri, "books", setImageUri, email);
+        uploadImage(resizedUri, "books", setDownloadURL, email);
       }
     }
   };
@@ -104,18 +110,36 @@ function BookAddComp(props) {
       }
     );
   };
+  useEffect(() => {
+    if (downloadURL) {
+      setLoading(true);
+      Image.prefetch(downloadURL)
+        .then(() => setLoading(false))
+        .catch(() => setLoading(false));
+    }
+  }, [downloadURL]);
 
   return (
     <View style={styles.rectangle}>
       <TouchableOpacity onPress={pickImageBook}>
-        {downloadURL ? (
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#2D2429" />
+        ) : downloadURL ? (
           <Image
             source={{ uri: downloadURL }}
+<<<<<<< HEAD
             style={{ width: "100%", height: "100%" }}
             onError={(error) => console.log(error)}
+            onLoad={console.log("image url lol" + downloadURL)}
+=======
+            style={{ width: 238, height: 238, borderRadius: 30 }}
+>>>>>>> 84ad56b774ded716a4c96f1184e514c3d0e7a891
           />
         ) : (
-          <Image source={require("../assets/images/burgundyplus.png")} />
+          <Image
+            source={require("../assets/images/burgundyplus.png")}
+            style={{ width: 50, height: 50 }}
+          />
         )}
       </TouchableOpacity>
     </View>

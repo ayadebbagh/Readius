@@ -46,6 +46,7 @@ const db = getFirestore(FbApp);
 
 export default function AddBookScreen({ navigation, route }) {
   const email = route.params?.email;
+  const { addBook } = route.params;
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
@@ -83,6 +84,14 @@ export default function AddBookScreen({ navigation, route }) {
               }
             );
             navigation.navigate("ProfileSetUp", { email: email });
+            const newBook = {
+              title: title,
+              author: author,
+              description: description,
+              imageUri: downloadURL,
+              email: email,
+            };
+            addBook(newBook);
           }}
         >
           <Text style={styles.swapText}>Get Swapping!</Text>
@@ -189,5 +198,6 @@ const styles = StyleSheet.create({
     width: 350,
     height: 140,
     backgroundColor: "#ECEFE8",
+    textAlignVertical: "top",
   },
 });
