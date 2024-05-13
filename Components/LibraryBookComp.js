@@ -79,6 +79,8 @@ const styles = StyleSheet.create({
     fontFamily: "GartSerif",
     fontSize: 17,
     marginTop: 2,
+    width: 140,
+    textAlign: "center",
   },
   author: {
     color: "#9388A6",

@@ -54,6 +54,7 @@ export default function AddBookScreen({ navigation, route }) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
+  const [charCount, setCharCount] = useState(0);
   const [downloadURL, setDownloadURL] = useState("");
   function handleDownloadURL(url) {
     setDownloadURL(url);
@@ -120,13 +121,21 @@ export default function AddBookScreen({ navigation, route }) {
           onChangeText={(text) => setAuthor(text)}
           value={author}
         />
-        <TextInput
-          style={styles.DescriptionInput}
-          placeholder="Description"
-          onChangeText={(text) => setDescription(text)}
-          multiline={true}
-          value={description}
-        />
+        <View style={styles.descriptionContainer}>
+          <TextInput
+            style={styles.DescriptionInput}
+            placeholder="Description"
+            onChangeText={(text) => {
+              if (text.length <= 200) {
+                setDescription(text);
+                setCharCount(text.length);
+              }
+            }}
+            multiline={true}
+            value={description}
+          />
+          <Text style={styles.charCount}>{charCount}/200</Text>
+        </View>
       </KeyboardAwareScrollView>
     </View>
   );
@@ -143,6 +152,17 @@ const styles = StyleSheet.create({
     left: 25,
     top: 440,
     position: "absolute",
+  },
+  descriptionContainer: {
+    position: "relative",
+  },
+
+  charCount: {
+    position: "absolute",
+    right: 10,
+    bottom: 10,
+    fontSize: 12,
+    color: "#888",
   },
   addBookText: {
     fontFamily: "GartSerifBold",

@@ -70,9 +70,11 @@ export default function BookDetailsScreen({ navigation, route }) {
         >
           <Text style={styles.usernameText}>@{username}</Text>
         </TouchableOpacity>
-        <Text style={styles.titleText}>{title}</Text>
-        <Text style={styles.authorText}>{author}</Text>
-        <Text style={styles.descriptionText}>{description}</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.titleText}>{title}</Text>
+          <Text style={styles.authorText}>{author}</Text>
+          <Text style={styles.descriptionText}>{description}</Text>
+        </View>
       </View>
       <TouchableOpacity
         onPress={() =>
@@ -96,11 +98,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ECEFE8",
+    width: "100%",
   },
   bookImage: {
     width: screenWidth,
     height: screenWidth,
     top: -250,
+  },
+  textContainer: {
+    position: "absolute",
+    left: -170,
+    top: -60,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   usernameText: {
     color: "#2D2429",
@@ -116,27 +126,24 @@ const styles = StyleSheet.create({
     color: "#2D2429",
     fontSize: 36,
     fontFamily: "GartSerif",
-    left: -170,
-    top: -60,
-    position: "absolute",
+    width: "90%",
+    //position: "absolute",
   },
   authorText: {
     marginTop: 10,
     color: "#9388A6",
     fontSize: 30,
     fontFamily: "GartSerif",
-    left: -170,
-    top: -20,
-    position: "absolute",
+
+    //position: "absolute",
   },
   descriptionText: {
     marginTop: 10,
     color: "#625874",
     fontSize: 16,
     fontFamily: "GartSerif",
-    left: -170,
-    top: 20,
-    position: "absolute",
+
+    //position: "absolute",
     width: "90%",
   },
   arrow: {
