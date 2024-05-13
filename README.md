@@ -1,3 +1,8 @@
+## Readius!
+Readius is a book swapping app made with React-Native! Ths is my very first React-Native project and am currently still working on it. Below is a demo of the latest version I have and a TDO list of what I am still intending to do. I will be updating this README and repo constantly :)
+
+https://github.com/ayadebbagh/Readius/assets/114888002/e551784a-a4cb-41b2-b44d-eabbc03cabda
+
 ## TODO:
 
 - Fixes:
