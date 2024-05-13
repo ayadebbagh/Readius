@@ -17,6 +17,7 @@ import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { FbApp } from "../Helpers/FirebaseConfig.js";
+import BookContext from "../Helpers/BookContext.js";
 
 import {
   getFirestore,
@@ -28,6 +29,7 @@ import {
   where,
   getDocs,
   getDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -47,6 +49,8 @@ const db = getFirestore(FbApp);
 export default function AddBookScreen({ navigation, route }) {
   const email = route.params?.email;
   const { addBook } = useContext(BookContext);
+  const [titleForBookAddComp, setTitleForBookAddComp] = useState("");
+  const [renderBookAddComp, setRenderBookAddComp] = useState(false);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
@@ -65,11 +69,10 @@ export default function AddBookScreen({ navigation, route }) {
         scrollEnabled={false}
       >
         <Text style={styles.addBookText}>Add a book!</Text>
-
         <BookAddComp
           style={styles.book}
           email={email}
-          title={title}
+          title={titleForBookAddComp}
           onDownloadURL={handleDownloadURL}
         />
 
@@ -84,6 +87,7 @@ export default function AddBookScreen({ navigation, route }) {
                 author: author,
                 description: description,
                 URL: downloadURL,
+                addedAt: serverTimestamp(),
               }
             );
             navigation.navigate("ProfileSetUp", { email: email });
@@ -103,9 +107,13 @@ export default function AddBookScreen({ navigation, route }) {
         <TextInput
           style={styles.TitleInput}
           placeholder="Title"
-          onChangeText={(text) => setTitle(text)}
+          onChangeText={(text) => {
+            setTitle(text);
+            setTitleForBookAddComp(text);
+          }}
           value={title}
         />
+
         <TextInput
           style={styles.AuthorInput}
           placeholder="Author"

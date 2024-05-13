@@ -26,7 +26,7 @@ const Stack = createStackNavigator();
 export default function App() {
   const [books, setBooks] = useState([]);
   const addBook = (book) => {
-    setBooks((prevBooks) => [...prevBooks, book]);
+    setBooks((prevBooks) => [book, ...prevBooks]);
   };
   const [fontsLoaded] = useFonts({
     BrightCircle: require("./assets/fonts/Bright-Circle-Font-by-Keithzo-BF65df84b7c2f07.otf"),

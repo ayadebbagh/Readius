@@ -26,6 +26,7 @@ import {
   ref,
   uploadBytesResumable,
   getDownloadURL,
+  orderBy,
 } from "firebase/storage";
 import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
@@ -37,6 +38,7 @@ const db = getFirestore(FbApp);
 function BookAddComp(props) {
   const email = props.email;
   const title = props.title;
+  console.log("title in book comp: " + title);
   const [downloadURL, setDownloadURL] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
@@ -80,7 +82,7 @@ function BookAddComp(props) {
   const uploadImage = async (uri, path, setImageUriFunc, email) => {
     const storage = getStorage();
     console.log(`Email: ${email}, Title: ${title}`);
-    const uniqueID = `${email}_${title}`;
+    const uniqueID = `${email}_${new Date().getTime()}`;
     const storageRef = ref(storage, `${path}/${uniqueID}`);
     const response = await fetch(uri);
     const blob = await response.blob();
@@ -107,6 +109,7 @@ function BookAddComp(props) {
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach(async (document) => {
           const userRef = doc(db, "users", document.id);
+
           await updateDoc(userRef, { [`${path}Picture`]: downloadURL });
         });
       }

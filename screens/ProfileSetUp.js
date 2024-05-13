@@ -17,7 +17,9 @@ import {
   where,
   getDocs,
   updateDoc,
+  orderBy,
 } from "firebase/firestore";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   getStorage,
   ref,
@@ -48,16 +50,19 @@ export default function ProfileSetUp({ navigation, route }) {
   const email = route.params?.email;
   console.log("email:", email);
   console.log(imageUri);
-  useEffect(() => {
-    const fetchBooks = async () => {
-      const booksCollection = collection(db, "users", email, "books");
-      const booksSnapshot = await getDocs(booksCollection);
-      const booksList = booksSnapshot.docs.map((doc) => doc.data());
-      setBooks(booksList);
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchBooks = async () => {
+        const booksCollection = collection(db, "users", email, "books");
+        const q = query(booksCollection, orderBy("addedAt"));
+        const booksSnapshot = await getDocs(q);
+        const booksList = booksSnapshot.docs.map((doc) => doc.data());
+        setBooks(booksList);
+      };
 
-    fetchBooks();
-  }, []);
+      fetchBooks();
+    }, [])
+  );
 
   const resizeImage = async (uri) => {
     const manipResult = await ImageManipulator.manipulateAsync(
@@ -92,6 +97,7 @@ export default function ProfileSetUp({ navigation, route }) {
       }
     }
   };
+
   const pickImageRectangle = async () => {
     console.log("pickImageRectangle called");
     let resultBanner = await ImagePicker.launchImageLibraryAsync({
@@ -159,9 +165,6 @@ export default function ProfileSetUp({ navigation, route }) {
       fetchUserData();
     }
   }, [email]);
-  const handleAddBook = (book) => {
-    setBooks((prevBooks) => [...prevBooks, book]);
-  };
 
   return (
     <View style={styles.container}>
