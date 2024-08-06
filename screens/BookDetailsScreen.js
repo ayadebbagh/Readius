@@ -42,6 +42,9 @@ export default function BookDetailsScreen({ navigation, route }) {
   const bookURL = route.params?.bookURL;
   console.log("email BookDetailsScreen:" + email);
   console.log(route.params);
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -76,13 +79,7 @@ export default function BookDetailsScreen({ navigation, route }) {
           <Text style={styles.descriptionText}>{description}</Text>
         </View>
       </View>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("ProfileSetUp", {
-            email: email,
-          })
-        }
-      >
+      <TouchableOpacity onPress={handleGoBack}>
         <Image
           style={styles.arrow}
           source={require("../assets/images/backArrow.png")}

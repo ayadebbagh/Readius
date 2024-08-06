@@ -212,7 +212,14 @@ export default function ProfileSetUp({ navigation, route }) {
         contentContainerStyle={{ paddingHorizontal: spaceBetweenBooks / 2 }}
         style={styles.flatlist}
       />
-      <TouchableOpacity style={styles.homeIcon}>
+      <TouchableOpacity
+        style={styles.homeIcon}
+        onPress={() =>
+          navigation.navigate("Explore", {
+            email: email,
+          })
+        }
+      >
         <Image
           source={require("../assets/images/homeicon.png")}
           style={{ width: 55, height: 55 }}
