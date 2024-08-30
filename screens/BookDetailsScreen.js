@@ -19,17 +19,6 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import FbApp from "../Helpers/FirebaseConfig.js";
-import { Logs } from "expo";
-import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
-import LibraryBookComp from "../Components/LibraryBookComp.js";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -90,7 +79,7 @@ export default function BookDetailsScreen({ navigation, route }) {
           <Text style={styles.descriptionText}>{description}</Text>
         </View>
       </View>
-      <TouchableOpacity onPress={handleGoBack}>
+      <TouchableOpacity onPress={handleGoBack} style={styles.arrowContainer}>
         <Image
           style={styles.arrow}
           source={require("../assets/images/backArrow.png")}
@@ -99,6 +88,7 @@ export default function BookDetailsScreen({ navigation, route }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     position: "relative",
@@ -106,7 +96,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ECEFE8",
-    width: "100%",
   },
   bookImage: {
     width: screenWidth,
@@ -114,9 +103,6 @@ const styles = StyleSheet.create({
     top: -250,
   },
   textContainer: {
-    position: "absolute",
-    left: -170,
-    top: -60,
     flexDirection: "row",
     flexWrap: "wrap",
   },
@@ -125,38 +111,45 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 10,
     fontFamily: "GartSerifBold",
-    right: -150,
+    right: -10,
     top: -90,
     position: "absolute",
   },
   titleText: {
+    position: "absolute",
     marginTop: 10,
     color: "#2D2429",
     fontSize: 36,
     fontFamily: "GartSerif",
     width: "90%",
-    //position: "absolute",
+    left: -5,
+    top: -80,
   },
   authorText: {
     marginTop: 10,
     color: "#9388A6",
     fontSize: 30,
     fontFamily: "GartSerif",
-
-    //position: "absolute",
+    position: "absolute",
+    left: -5,
+    top: -40,
   },
   descriptionText: {
     marginTop: 10,
     color: "#625874",
     fontSize: 16,
     fontFamily: "GartSerif",
-
-    //position: "absolute",
+    left: -5,
+    top: -10,
     width: "90%",
   },
-  arrow: {
-    bottom: -180,
-    left: -160,
+  arrowContainer: {
     position: "absolute",
+    left: 30,
+    bottom: 30,
+  },
+  arrow: {
+    width: 30,
+    height: 30,
   },
 });

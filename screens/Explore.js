@@ -25,15 +25,20 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 const bookWidth = 150;
 const spaceBetweenBooks = 10;
-const numColumns = Math.floor(
-  (screenWidth - spaceBetweenBooks) / (bookWidth + spaceBetweenBooks)
-);
+const padding = 20; // Add padding to the calculation
+
+const calculateNumColumns = (screenWidth, bookWidth, margin, padding) => {
+  return Math.floor((screenWidth - padding * 2) / (bookWidth + margin));
+};
 
 export default function Explore({ navigation, route }) {
   const [books, setBooks] = useState([]);
   const email = route.params?.email;
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredBooks, setFilteredBooks] = useState([]);
+  const [numColumns, setNumColumns] = useState(
+    calculateNumColumns(screenWidth, bookWidth, spaceBetweenBooks, padding)
+  );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -71,6 +76,7 @@ export default function Explore({ navigation, route }) {
       fetchAllBooks();
     }, [])
   );
+
   useEffect(() => {
     if (searchQuery === "") {
       setFilteredBooks(books);
@@ -84,6 +90,24 @@ export default function Explore({ navigation, route }) {
       setFilteredBooks(filtered);
     }
   }, [searchQuery, books]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newNumColumns = calculateNumColumns(
+        Dimensions.get("window").width,
+        bookWidth,
+        spaceBetweenBooks,
+        padding
+      );
+      setNumColumns(newNumColumns);
+    };
+
+    const subscription = Dimensions.addEventListener("change", handleResize);
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -106,7 +130,8 @@ export default function Explore({ navigation, route }) {
         )}
         keyExtractor={(item) => `${item.userEmail}-${item.id}`}
         horizontal={false}
-        numColumns={numColumns}
+        numColumns={numColumns} // Set numColumns dynamically
+        key={numColumns} // Change key to force re-render
         contentContainerStyle={{ paddingHorizontal: spaceBetweenBooks / 2 }}
         style={styles.flatlist}
       />

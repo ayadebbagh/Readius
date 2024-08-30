@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  PixelRatio,
   FlatList,
 } from "react-native";
 import {
@@ -27,7 +26,6 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import FbApp from "../Helpers/FirebaseConfig.js";
-import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import LibraryBookComp from "../Components/LibraryBookComp.js";
@@ -36,17 +34,22 @@ import LibraryBookComp from "../Components/LibraryBookComp.js";
 const db = getFirestore(FbApp);
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
-const bookWidth = 150; // Change this to the width of your LibraryBookComp component
+const bookWidth = 150;
 const spaceBetweenBooks = 10;
-const numColumns = Math.floor(
-  (screenWidth - spaceBetweenBooks) / (bookWidth + spaceBetweenBooks)
-);
+const padding = 20; // Add padding to the calculation
+
+const calculateNumColumns = (screenWidth, bookWidth, margin, padding) => {
+  return Math.floor((screenWidth - padding * 2) / (bookWidth + margin));
+};
 
 export default function ProfileSetUp({ navigation, route }) {
   const [rectangleImageUri, setRectangleImageUri] = useState(null);
   const [user, setUser] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const [books, setBooks] = useState([]);
+  const [numColumns, setNumColumns] = useState(
+    calculateNumColumns(screenWidth, bookWidth, spaceBetweenBooks, padding)
+  );
   const email = route.params?.email;
   console.log("email:", email);
   console.log(imageUri);
@@ -166,6 +169,24 @@ export default function ProfileSetUp({ navigation, route }) {
     }
   }, [email]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const newNumColumns = calculateNumColumns(
+        Dimensions.get("window").width,
+        bookWidth,
+        spaceBetweenBooks,
+        padding
+      );
+      setNumColumns(newNumColumns);
+    };
+
+    const subscription = Dimensions.addEventListener("change", handleResize);
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.roundedRectangleContainer}>
@@ -198,18 +219,23 @@ export default function ProfileSetUp({ navigation, route }) {
       <FlatList
         data={books}
         renderItem={({ item }) => (
-          <View style={{ margin: 10 }}>
+          <View style={{ margin: spaceBetweenBooks / 2 }}>
             <LibraryBookComp
               book={item}
               email={email}
               navigation={navigation}
+              style={{ width: bookWidth }}
             />
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
         horizontal={false}
-        numColumns={numColumns}
-        contentContainerStyle={{ paddingHorizontal: spaceBetweenBooks / 2 }}
+        numColumns={numColumns} // Set numColumns dynamically
+        key={numColumns} // Change key to force re-render
+        contentContainerStyle={{
+          paddingHorizontal: spaceBetweenBooks / 2,
+          marginHorizontal: spaceBetweenBooks,
+        }}
         style={styles.flatlist}
       />
       <TouchableOpacity
@@ -241,6 +267,7 @@ export default function ProfileSetUp({ navigation, route }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     position: "relative",
@@ -289,7 +316,7 @@ const styles = StyleSheet.create({
   roundedRectangleImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 30,
+    borderRadius: 20,
   },
   homeIcon: {
     position: "absolute",
@@ -304,6 +331,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   flatlist: {
-    top: 320,
+    top: screenHeight > 800 ? 400 : 320, // Adjust top dynamically
   },
 });
