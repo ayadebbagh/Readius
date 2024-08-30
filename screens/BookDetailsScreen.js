@@ -8,6 +8,7 @@ import {
   Dimensions,
   PixelRatio,
   FlatList,
+  Linking,
 } from "react-native";
 import {
   getFirestore,
@@ -35,6 +36,7 @@ const screenHeight = Dimensions.get("window").height;
 
 export default function BookDetailsScreen({ navigation, route }) {
   const [username, setUsername] = useState(null);
+  const [instagramUsername, setInstagramUsername] = useState(null);
   const email = route.params?.email;
   const title = route.params?.title;
   const description = route.params?.description;
@@ -53,7 +55,9 @@ export default function BookDetailsScreen({ navigation, route }) {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        setUsername(docSnap.data().username);
+        const userData = docSnap.data();
+        setUsername(userData.username);
+        setInstagramUsername(userData.igUser);
       } else {
         console.log("No such document!");
       }
@@ -62,6 +66,12 @@ export default function BookDetailsScreen({ navigation, route }) {
     fetchUsername();
   }, []);
 
+  const handleInstagramPress = () => {
+    if (instagramUsername) {
+      Linking.openURL(`https://instagram.com/${instagramUsername}`);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View>
@@ -69,9 +79,10 @@ export default function BookDetailsScreen({ navigation, route }) {
       </View>
       <View style={{ top: -150 }}>
         <TouchableOpacity
+          onPress={handleInstagramPress}
           style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
         >
-          <Text style={styles.usernameText}>@{username}</Text>
+          <Text style={styles.usernameText}>{username}</Text>
         </TouchableOpacity>
         <View style={styles.textContainer}>
           <Text style={styles.titleText}>{title}</Text>

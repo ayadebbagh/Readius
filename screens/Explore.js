@@ -1,5 +1,14 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Text, FlatList, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  SafeAreaView,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   getFirestore,
@@ -23,6 +32,8 @@ const numColumns = Math.floor(
 export default function Explore({ navigation, route }) {
   const [books, setBooks] = useState([]);
   const email = route.params?.email;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredBooks, setFilteredBooks] = useState([]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -51,17 +62,35 @@ export default function Explore({ navigation, route }) {
         allBooks.sort((a, b) => b.addedAt.toDate() - a.addedAt.toDate());
 
         setBooks(allBooks);
+        setFilteredBooks(allBooks);
       };
 
       fetchAllBooks();
     }, [])
   );
+  useEffect(() => {
+    if (searchQuery === "") {
+      setFilteredBooks(books);
+    } else {
+      const filtered = books.filter(
+        (book) =>
+          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.author.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredBooks(filtered);
+    }
+  }, [searchQuery, books]);
 
   return (
-    <View style={styles.container}>
-      <Text>Explore</Text>
+    <SafeAreaView style={styles.container}>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search by title or author"
+        value={searchQuery}
+        onChangeText={(text) => setSearchQuery(text)}
+      />
       <FlatList
-        data={books}
+        data={filteredBooks}
         renderItem={({ item }) => (
           <View style={{ margin: 10 }}>
             <LibraryBookComp
@@ -77,7 +106,33 @@ export default function Explore({ navigation, route }) {
         contentContainerStyle={{ paddingHorizontal: spaceBetweenBooks / 2 }}
         style={styles.flatlist}
       />
-    </View>
+      <TouchableOpacity
+        style={styles.profileIcon}
+        onPress={() =>
+          navigation.navigate("ProfileSetUp", {
+            email: email,
+          })
+        }
+      >
+        <Image
+          source={require("../assets/images/profileicon.png")}
+          style={{ width: 55, height: 55 }}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.bookIcon}
+        onPress={() =>
+          navigation.navigate("AddBookScreen", {
+            email: email,
+          })
+        }
+      >
+        <Image
+          source={require("../assets/images/bookicon.png")}
+          style={{ width: 55, height: 55 }}
+        />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
@@ -88,5 +143,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ECEFE8",
+  },
+  searchBar: {
+    height: 40,
+    borderColor: "#2D2429",
+    borderWidth: 3,
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    margin: 10,
+    width: "90%",
+    fontFamily: "GartSerif",
+  },
+  profileIcon: {
+    position: "absolute",
+    left: 30,
+    bottom: 30,
+    zIndex: 2,
+  },
+  bookIcon: {
+    position: "absolute",
+    right: 30,
+    bottom: 30,
+    zIndex: 2,
   },
 });

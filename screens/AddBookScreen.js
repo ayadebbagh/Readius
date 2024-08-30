@@ -91,7 +91,7 @@ export default function AddBookScreen({ navigation, route }) {
                 addedAt: serverTimestamp(),
               }
             );
-            navigation.navigate("ProfileSetUp", { email: email });
+            navigation.goBack({ email: email });
             const newBook = {
               title: title,
               author: author,

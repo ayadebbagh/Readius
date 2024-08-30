@@ -33,12 +33,15 @@ export default function SignUp({ navigation, route }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [igUser, setigUser] = useState("");
   async function getUserByUsernameOrEmail(username, email) {
     const userRef = collection(db, "users");
     const usernameQuery = query(userRef, where("username", "==", username));
     const emailQuery = query(userRef, where("email", "==", email));
+    const igUserQuery = query(userRef, where("igUser", "==", igUser));
     const usernameSnapshot = await getDocs(usernameQuery);
     const emailSnapshot = await getDocs(emailQuery);
+    const igUserSnapshot = await getDocs(igUserQuery);
 
     if (!usernameSnapshot.empty || !emailSnapshot.empty) {
       return true;
@@ -89,23 +92,30 @@ export default function SignUp({ navigation, route }) {
             onChangeText={(text) => setPassword(text)}
             value={password}
           />
+          <TextInput
+            style={styles.igUserInput}
+            placeholder="Instagram Username"
+            onChangeText={(text) => setigUser(text)}
+            value={igUser}
+          />
         </View>
         <TouchableOpacity
           style={styles.createAccountButton}
           onPress={async () => {
-            if (username && email && password) {
+            if (username && email && password && igUser) {
               try {
                 // Check if an account with the same username or email already exists
                 const existingUser = await getUserByUsernameOrEmail(
                   username,
-                  email
+                  email,
+                  igUser
                 );
 
                 if (existingUser) {
                   // If an account already exists, show an error message
                   Alert.alert(
                     "Error",
-                    "An account with that username or email already exists."
+                    "An account with that username, email, or Instagram username already exists."
                   );
                 } else {
                   // If no account exists, create a new account
@@ -113,6 +123,7 @@ export default function SignUp({ navigation, route }) {
                     username: username,
                     email: email,
                     password: password,
+                    igUser: igUser,
                   });
                   console.log("Document written with ID: ", username);
                   navigation.goBack();
@@ -183,6 +194,16 @@ const styles = StyleSheet.create({
     height: 46,
   },
   UsernameInput: {
+    fontFamily: "GartSerif",
+    borderColor: "#2D2429",
+    borderWidth: 4,
+    borderRadius: 29,
+    padding: 10,
+    width: 267,
+    height: 46,
+  },
+  igUserInput: {
+    marginTop: 15,
     fontFamily: "GartSerif",
     borderColor: "#2D2429",
     borderWidth: 4,
