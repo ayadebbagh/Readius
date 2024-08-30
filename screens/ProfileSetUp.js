@@ -216,28 +216,29 @@ export default function ProfileSetUp({ navigation, route }) {
         </TouchableOpacity>
         <Text style={styles.usernameText}>@{user ? user.username : ""}</Text>
       </View>
-      <FlatList
-        data={books}
-        renderItem={({ item }) => (
-          <View style={{ margin: spaceBetweenBooks / 2 }}>
-            <LibraryBookComp
-              book={item}
-              email={email}
-              navigation={navigation}
-              style={{ width: bookWidth }}
-            />
-          </View>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-        horizontal={false}
-        numColumns={numColumns} // Set numColumns dynamically
-        key={numColumns} // Change key to force re-render
-        contentContainerStyle={{
-          paddingHorizontal: spaceBetweenBooks / 2,
-          marginHorizontal: spaceBetweenBooks,
-        }}
-        style={styles.flatlist}
-      />
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={books}
+          renderItem={({ item }) => (
+            <View style={{ margin: spaceBetweenBooks / 2 }}>
+              <LibraryBookComp
+                book={item}
+                email={email}
+                navigation={navigation}
+                style={{ width: bookWidth }}
+              />
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal={false}
+          numColumns={numColumns} // Set numColumns dynamically
+          key={numColumns} // Change key to force re-render
+          contentContainerStyle={{
+            paddingHorizontal: padding, // Add padding to center the content
+          }}
+          style={styles.flatlist}
+        />
+      </View>
       <TouchableOpacity
         style={styles.homeIcon}
         onPress={() =>
@@ -290,7 +291,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-
   roundedRectangle: {
     backgroundColor: "#C8C2D3",
     height: screenHeight * 0.25,
@@ -299,7 +299,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   plusSign: {
     height: 30,
     width: 30,
@@ -330,7 +329,12 @@ const styles = StyleSheet.create({
     bottom: 30,
     zIndex: 2,
   },
+  flatlistContainer: {
+    flex: 1,
+    marginTop: screenHeight * 0.25 + 120,
+    alignItems: "center",
+  },
   flatlist: {
-    top: screenHeight > 800 ? 400 : 320, // Adjust top dynamically
+    width: "100%",
   },
 });
