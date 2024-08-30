@@ -124,6 +124,7 @@ export default function SignUp({ navigation, route }) {
                     email: email,
                     password: password,
                     igUser: igUser,
+                    hasViewedHomeScreen: false,
                   });
                   console.log("Document written with ID: ", username);
                   navigation.goBack();

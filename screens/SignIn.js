@@ -1,37 +1,55 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  TextInput,
-  Platform,
-  Button,
-  Image,
-  Alert,
-} from "react-native";
-import React, { useRef, useEffect, useState } from "react";
+import { StyleSheet, Text, View, TextInput, Alert } from "react-native";
+import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import BackgroundAnimation from "../Components/ImageBackground.js";
-import { initializeApp } from "firebase/app";
-
 import {
   getFirestore,
   doc,
-  getDocs,
+  getDoc,
   query,
   collection,
   where,
+  getDocs,
 } from "firebase/firestore";
 import FbApp from "../Helpers/FirebaseConfig.js";
+
 const db = getFirestore(FbApp);
 
-export default function SignIn(route) {
+export default function SignIn() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleSignIn = async () => {
+    if (email && password) {
+      try {
+        const q = query(collection(db, "users"), where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          if (userData.password === password) {
+            if (userData.hasViewedHomeScreen) {
+              navigation.navigate("ProfileSetUp", { email: email });
+            } else {
+              navigation.navigate("HomeScreen", { email: email });
+            }
+          } else {
+            Alert.alert("Your password is incorrect");
+          }
+        } else {
+          Alert.alert("You don't have an account :(");
+        }
+      } catch (e) {
+        console.error("Error signing in: ", e);
+      }
+    } else {
+      Alert.alert("Error", "Please fill all fields.");
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -70,27 +88,7 @@ export default function SignIn(route) {
             value={password}
           />
         </View>
-        <TouchableOpacity
-          style={styles.signUpButton}
-          onPress={async () => {
-            const q = query(
-              collection(db, "users"),
-              where("email", "==", email)
-            );
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-              const userData = querySnapshot.docs[0].data();
-              if (userData.password === password) {
-                navigation.navigate("HomeScreen", { email: email });
-              } else {
-                Alert.alert("Your password is incorrect");
-              }
-            } else {
-              Alert.alert("You don't have an account :(");
-            }
-          }}
-        >
+        <TouchableOpacity style={styles.signUpButton} onPress={handleSignIn}>
           <Text style={styles.buttonText}>Sign in</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
@@ -102,13 +100,13 @@ export default function SignIn(route) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-
   logo: {
     fontFamily: "BrightCircle",
     color: "#ECEFE8",

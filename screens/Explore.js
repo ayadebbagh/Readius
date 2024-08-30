@@ -44,7 +44,9 @@ export default function Explore({ navigation, route }) {
         let allBooks = [];
 
         for (const userDoc of usersSnapshot.docs) {
-          const userEmail = userDoc.data().email;
+          const userData = userDoc.data();
+          const userEmail = userData.email;
+          const username = userData.username; // Assuming username is the field name
           const booksCollection = collection(db, "users", userDoc.id, "books");
           const q = query(booksCollection, orderBy("addedAt", "desc"));
           const booksSnapshot = await getDocs(q);
@@ -52,6 +54,7 @@ export default function Explore({ navigation, route }) {
           const userBooks = booksSnapshot.docs.map((doc) => ({
             id: doc.id,
             userEmail: userEmail,
+            username: username, // Add username to each book
             ...doc.data(),
           }));
 
@@ -75,7 +78,8 @@ export default function Explore({ navigation, route }) {
       const filtered = books.filter(
         (book) =>
           book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.author.toLowerCase().includes(searchQuery.toLowerCase())
+          book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.username.toLowerCase().includes(searchQuery.toLowerCase()) // Add this line
       );
       setFilteredBooks(filtered);
     }
@@ -85,7 +89,7 @@ export default function Explore({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.searchBar}
-        placeholder="Search by title or author"
+        placeholder="Search by title, author, or user"
         value={searchQuery}
         onChangeText={(text) => setSearchQuery(text)}
       />
