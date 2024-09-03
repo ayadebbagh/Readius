@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     width: 120,
     borderRadius: 125,
     position: "absolute",
-    top: screenHeight * 0.25 - 60, // half of profilePic height
+    top: screenHeight * 0.25 - 60,
     zIndex: 1,
   },
   roundedRectangleContainer: {

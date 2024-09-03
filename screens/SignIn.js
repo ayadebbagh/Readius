@@ -22,12 +22,18 @@ export default function SignIn() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [appPassword, setAppPassword] = useState("");
 
   const handleSignIn = async () => {
-    if (email && password) {
+    if (email && password && appPassword) {
       try {
         const q = query(collection(db, "users"), where("email", "==", email));
         const querySnapshot = await getDocs(q);
+
+        if (appPassword !== "ReadiusApp") {
+          Alert.alert("Enter the right App Password");
+          return;
+        }
 
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
@@ -37,10 +43,10 @@ export default function SignIn() {
             } else {
               navigation.navigate("HomeScreen", { email: email });
             }
-          } else {
+          } else if (userData.password !== password) {
             Alert.alert("Your password is incorrect");
           }
-        } else {
+        } else if (querySnapshot.empty) {
           Alert.alert("You don't have an account :(");
         }
       } catch (e) {
@@ -87,6 +93,13 @@ export default function SignIn() {
             onChangeText={(text) => setPassword(text)}
             value={password}
           />
+          <TextInput
+            style={styles.AppPasswordInput}
+            placeholder="App Password"
+            secureTextEntry={true}
+            onChangeText={(text) => setAppPassword(text)}
+            value={appPassword}
+          />
         </View>
         <TouchableOpacity style={styles.signUpButton} onPress={handleSignIn}>
           <Text style={styles.buttonText}>Sign in</Text>
@@ -115,8 +128,8 @@ const styles = StyleSheet.create({
   },
   roundedRectangle: {
     backgroundColor: "#ECEFE8",
-    height: 187,
-    width: 330,
+    height: 200,
+    width: 300,
     borderRadius: 32,
     alignItems: "center",
     justifyContent: "center",
@@ -132,6 +145,16 @@ const styles = StyleSheet.create({
     height: 46,
   },
   passwordInput: {
+    marginTop: 15,
+    fontFamily: "GartSerif",
+    borderColor: "#C8C2D3",
+    borderWidth: 4,
+    borderRadius: 29,
+    padding: 10,
+    width: 267,
+    height: 46,
+  },
+  AppPasswordInput: {
     marginTop: 15,
     fontFamily: "GartSerif",
     borderColor: "#C8C2D3",

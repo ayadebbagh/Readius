@@ -21,6 +21,7 @@ import AddBookScreen from "./screens/AddBookScreen";
 import BookDetailsScreen from "./screens/BookDetailsScreen";
 import BookContext from "./Helpers/BookContext";
 import Explore from "./screens/Explore";
+import EditBook from "./screens/EditBook";
 
 const Stack = createStackNavigator();
 
@@ -97,6 +98,14 @@ export default function App() {
             component={Explore}
             options={{
               title: "Explore",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="EditBook"
+            component={EditBook}
+            options={{
+              title: "EditBook",
               headerShown: false,
             }}
           />

@@ -89,6 +89,7 @@ export default function AddBookScreen({ navigation, route }) {
                 description: description,
                 URL: downloadURL,
                 addedAt: serverTimestamp(),
+                publisherEmail: email,
               }
             );
             navigation.goBack({ email: email });
