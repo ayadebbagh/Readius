@@ -7,7 +7,7 @@ import { EmailContext } from "../Helpers/EmailContext.js";
 
 const db = getFirestore(FbApp);
 
-export default function HomeScreen({ navigation, route }) {
+export default function Tutorial1({ navigation, route }) {
   const animation = useRef(null);
   const { email } = useContext(EmailContext);
 
@@ -21,8 +21,9 @@ export default function HomeScreen({ navigation, route }) {
   }, [email]);
 
   const handleProfileSetup = () => {
-    navigation.navigate("Tutorial1");
+    navigation.navigate("ProfileSetUp");
   };
+  const handleTutorial = () => {};
 
   return (
     <View style={styles.homescreen}>
@@ -30,15 +31,21 @@ export default function HomeScreen({ navigation, route }) {
       <LottieView
         autoPlay
         ref={animation}
-        loop={false}
+        loop={true}
         style={{
           width: 250,
           height: 250,
         }}
-        source={require("../assets/animations/books.json")}
+        source={require("../assets/animations/message.json")}
       />
+      <Text style={styles.tutorial} onPress={handleTutorial}>
+        Choose a book and click's on the uploader's username! That will redirect
+        you to their Instagram page where you can shoot them a message about
+        swapping! They can look up your username and see if they like anything
+        you have!
+      </Text>
 
-      <Text style={styles.setProfile}>Let's look at a quick tutorial</Text>
+      <Text style={styles.setProfile}>Go to your profile!</Text>
       <TouchableOpacity style={styles.button} onPress={handleProfileSetup}>
         <Image
           source={require("../assets/images/arrow.png")}
@@ -61,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#ECEFE8",
     marginTop: 20,
+    width: "90%",
   },
   welcomeText: {
     fontFamily: "BrightCircle",

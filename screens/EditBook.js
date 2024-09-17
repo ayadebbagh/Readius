@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -25,7 +25,6 @@ export default function EditBookScreen({ navigation, route }) {
     title: initialTitle,
     description: initialDescription,
     author: initialAuthor,
-    email,
   } = route.params;
 
   const [title, setTitle] = useState(initialTitle);

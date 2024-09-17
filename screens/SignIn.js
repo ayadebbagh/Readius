@@ -1,33 +1,36 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, TextInput, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import BackgroundAnimation from "../Components/ImageBackground.js";
 import {
   getFirestore,
-  doc,
-  getDoc,
   query,
   collection,
   where,
   getDocs,
 } from "firebase/firestore";
 import FbApp from "../Helpers/FirebaseConfig.js";
+import { EmailContext } from "../Helpers/EmailContext.js";
 
 const db = getFirestore(FbApp);
 
 export default function SignIn() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
+  const { setEmail } = useContext(EmailContext);
+  const [emailInput, setEmailInput] = useState("");
   const [password, setPassword] = useState("");
   const [appPassword, setAppPassword] = useState("");
 
   const handleSignIn = async () => {
-    if (email && password && appPassword) {
+    if (emailInput && password && appPassword) {
       try {
-        const q = query(collection(db, "users"), where("email", "==", email));
+        const q = query(
+          collection(db, "users"),
+          where("email", "==", emailInput)
+        );
         const querySnapshot = await getDocs(q);
 
         if (appPassword !== "ReadiusApp") {
@@ -38,10 +41,11 @@ export default function SignIn() {
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           if (userData.password === password) {
+            setEmail(emailInput); // Set email in context
             if (userData.hasViewedHomeScreen) {
-              navigation.navigate("ProfileSetUp", { email: email });
+              navigation.navigate("ProfileSetUp");
             } else {
-              navigation.navigate("HomeScreen", { email: email });
+              navigation.navigate("HomeScreen");
             }
           } else if (userData.password !== password) {
             Alert.alert("Your password is incorrect");
@@ -83,8 +87,8 @@ export default function SignIn() {
             style={styles.emailInput}
             keyboardType="email-address"
             placeholder="Email"
-            onChangeText={(text) => setEmail(text)}
-            value={email}
+            onChangeText={(text) => setEmailInput(text)}
+            value={emailInput}
           />
           <TextInput
             style={styles.passwordInput}

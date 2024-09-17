@@ -7,7 +7,7 @@ import { EmailContext } from "../Helpers/EmailContext.js";
 
 const db = getFirestore(FbApp);
 
-export default function HomeScreen({ navigation, route }) {
+export default function Tutorial1({ navigation, route }) {
   const animation = useRef(null);
   const { email } = useContext(EmailContext);
 
@@ -21,8 +21,9 @@ export default function HomeScreen({ navigation, route }) {
   }, [email]);
 
   const handleProfileSetup = () => {
-    navigation.navigate("Tutorial1");
+    navigation.navigate("Tutorial3");
   };
+  const handleTutorial = () => {};
 
   return (
     <View style={styles.homescreen}>
@@ -30,15 +31,19 @@ export default function HomeScreen({ navigation, route }) {
       <LottieView
         autoPlay
         ref={animation}
-        loop={false}
+        loop={true}
         style={{
           width: 250,
           height: 250,
         }}
-        source={require("../assets/animations/books.json")}
+        source={require("../assets/animations/browse.json")}
       />
+      <Text style={styles.tutorial} onPress={handleTutorial}>
+        Then browse the explore page by looking up specific book titles,
+        authors, or the user who added it!
+      </Text>
 
-      <Text style={styles.setProfile}>Let's look at a quick tutorial</Text>
+      <Text style={styles.setProfile}>Next</Text>
       <TouchableOpacity style={styles.button} onPress={handleProfileSetup}>
         <Image
           source={require("../assets/images/arrow.png")}
@@ -61,6 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#ECEFE8",
     marginTop: 20,
+    width: "90%",
   },
   welcomeText: {
     fontFamily: "BrightCircle",

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -29,6 +29,7 @@ import FbApp from "../Helpers/FirebaseConfig.js";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import LibraryBookComp from "../Components/LibraryBookComp.js";
+import { EmailContext } from "../Helpers/EmailContext.js";
 
 // Use FbApp to get Firestore
 const db = getFirestore(FbApp);
@@ -47,10 +48,11 @@ export default function ProfileSetUp({ navigation, route }) {
   const [user, setUser] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const [books, setBooks] = useState([]);
+  const { email } = useContext(EmailContext);
   const [numColumns, setNumColumns] = useState(
     calculateNumColumns(screenWidth, bookWidth, spaceBetweenBooks, padding)
   );
-  const email = route.params?.email;
+
   console.log("email:", email);
   console.log(imageUri);
   useFocusEffect(
@@ -241,11 +243,7 @@ export default function ProfileSetUp({ navigation, route }) {
       </View>
       <TouchableOpacity
         style={styles.homeIcon}
-        onPress={() =>
-          navigation.navigate("Explore", {
-            email: email,
-          })
-        }
+        onPress={() => navigation.navigate("Explore")}
       >
         <Image
           source={require("../assets/images/homeicon.png")}
@@ -254,11 +252,7 @@ export default function ProfileSetUp({ navigation, route }) {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.bookIcon}
-        onPress={() =>
-          navigation.navigate("AddBookScreen", {
-            email: email,
-          })
-        }
+        onPress={() => navigation.navigate("AddBookScreen")}
       >
         <Image
           source={require("../assets/images/bookicon.png")}

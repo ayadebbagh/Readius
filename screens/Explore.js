@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore";
 import LibraryBookComp from "../Components/LibraryBookComp.js";
 import FbApp from "../Helpers/FirebaseConfig.js";
+import { EmailContext } from "../Helpers/EmailContext.js";
 
 const db = getFirestore(FbApp);
 const screenWidth = Dimensions.get("window").width;
@@ -33,7 +34,9 @@ const calculateNumColumns = (screenWidth, bookWidth, margin, padding) => {
 
 export default function Explore({ navigation, route }) {
   const [books, setBooks] = useState([]);
-  const email = route.params?.email;
+  const { email } = useContext(EmailContext);
+
+  console.log("Explore screen email: " + email);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [numColumns, setNumColumns] = useState(
@@ -137,11 +140,7 @@ export default function Explore({ navigation, route }) {
       />
       <TouchableOpacity
         style={styles.profileIcon}
-        onPress={() =>
-          navigation.navigate("ProfileSetUp", {
-            email: email,
-          })
-        }
+        onPress={() => navigation.navigate("ProfileSetUp")}
       >
         <Image
           source={require("../assets/images/profileicon.png")}
@@ -150,11 +149,7 @@ export default function Explore({ navigation, route }) {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.bookIcon}
-        onPress={() =>
-          navigation.navigate("AddBookScreen", {
-            email: email,
-          })
-        }
+        onPress={() => navigation.navigate("AddBookScreen")}
       >
         <Image
           source={require("../assets/images/bookicon.png")}

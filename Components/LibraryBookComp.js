@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -31,27 +31,30 @@ import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 const db = getFirestore(FbApp);
+import { EmailContext } from "../Helpers/EmailContext.js";
 
 function LibraryBookComp(props) {
   const { book, navigation } = props;
-  const email = props.email;
+  const { email } = useContext(EmailContext);
   console.log("image url from librarybookcomp: " + book.URL);
   console.log("title from librarybookcomp: " + book.title);
   console.log("email from librarybookcomp: " + email);
+
+  const handlePress = () => {
+    console.log("Publisher email: in book comp " + book.publisherEmail); // Log the publisher's email
+    console.log("Logged-in email: in book comp " + email); // Log the logged-in email
+    navigation.navigate("BookDetailsScreen", {
+      title: book.title,
+      author: book.author,
+      description: book.description,
+      publisherEmail: book.publisherEmail, // Pass the publisher's email // Pass the logged-in email separately
+      bookURL: book.URL,
+    });
+  };
+
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
-      <TouchableOpacity
-        style={styles.rectangle}
-        onPress={() =>
-          navigation.navigate("BookDetailsScreen", {
-            title: book.title,
-            author: book.author,
-            description: book.description,
-            email: email,
-            bookURL: book.URL,
-          })
-        }
-      >
+      <TouchableOpacity style={styles.rectangle} onPress={handlePress}>
         <Image
           source={{ uri: book.URL }}
           style={{ width: 143, height: 143, borderRadius: 30 }}

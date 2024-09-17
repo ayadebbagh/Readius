@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -32,12 +32,14 @@ import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+import { emailContext } from "../screens/SignIn.js";
 
 const db = getFirestore(FbApp);
 
 function BookAddComp(props) {
-  const email = props.email;
+  const email = useContext(emailContext);
   const title = props.title;
+  console.log("BookAddComp received email: " + email);
   console.log("title in book comp: " + title);
   const [downloadURL, setDownloadURL] = useState(null);
   const [isLoading, setLoading] = useState(false);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import { EmailContext } from "../Helpers/EmailContext.js";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -26,53 +27,55 @@ export default function BookDetailsScreen({ navigation, route }) {
   const [username, setUsername] = useState(null);
   const [instagramUsername, setInstagramUsername] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
-  const [publisherEmail, setPublisherEmail] = useState(null);
-  const { email, title, description, author, bookURL } = route.params || {};
+  const { email } = useContext(EmailContext);
+  const { publisherEmail, title, description, author, bookURL } =
+    route.params || {};
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("Fetching data");
-      console.log("Current user email:", email);
+      console.log("Fetching data in BookDetailsScreen...");
+      console.log("Publisher email (from route params):", publisherEmail);
+      console.log("Logged-in user email:", email);
 
       const db = getFirestore();
 
-      // Fetch user data
-      const userDocRef = doc(db, "users", email);
-      const userDocSnap = await getDoc(userDocRef);
+      try {
+        // Fetching book owner details
+        const bookOwnerDocRef = doc(db, "users", publisherEmail);
+        console.log("Fetching book owner document for:", publisherEmail);
 
-      if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        setUsername(userData.username);
-        setInstagramUsername(userData.igUser);
-      } else {
-        console.log("No user document found!");
-      }
+        const bookOwnerDocSnap = await getDoc(bookOwnerDocRef);
 
-      // Fetch book data
-      const booksRef = collection(db, "users", email, "books");
-      const q = query(
-        booksRef,
-        where("title", "==", title),
-        where("author", "==", author)
-      );
-      const querySnapshot = await getDocs(q);
+        if (bookOwnerDocSnap.exists()) {
+          const bookOwnerData = bookOwnerDocSnap.data();
+          console.log("Book owner data retrieved:", bookOwnerData);
 
-      if (!querySnapshot.empty) {
-        const bookData = querySnapshot.docs[0].data();
-        console.log("Book data:", bookData);
-        setPublisherEmail(bookData.publisherEmail);
+          const isOwner = email === publisherEmail;
+          console.log(
+            `Is the logged-in user the owner? ${isOwner ? "Yes" : "No"}`
+          );
 
-        // Check if the current user is the book's owner
-        const ownerStatus = email === bookData.publisherEmail;
-        console.log("Is owner:", ownerStatus);
-        setIsOwner(ownerStatus);
-      } else {
-        console.log("No matching book found");
+          // Set owner state
+          setIsOwner(isOwner);
+
+          // Set username and Instagram username
+          setUsername(bookOwnerData.username || "Unknown");
+          setInstagramUsername(bookOwnerData.igUser || "Unknown");
+        } else {
+          console.log("Book owner document does not exist!");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [email, title, author]);
+  }, [publisherEmail, email]);
+
+  // Log whenever isOwner changes
+  useEffect(() => {
+    console.log("Is owner (current state):", isOwner);
+  }, [isOwner]);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -103,7 +106,7 @@ export default function BookDetailsScreen({ navigation, route }) {
           try {
             console.log("Attempting to delete book");
             const db = getFirestore();
-            const booksRef = collection(db, "users", email, "books");
+            const booksRef = collection(db, "users", publisherEmail, "books");
             const q = query(
               booksRef,
               where("title", "==", title),
