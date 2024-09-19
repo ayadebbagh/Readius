@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from "react";
 import {
   View,
   StyleSheet,
@@ -20,6 +26,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { EmailContext } from "../Helpers/EmailContext.js";
+import { useFocusEffect } from "@react-navigation/native";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -31,46 +38,48 @@ export default function BookDetailsScreen({ navigation, route }) {
   const { publisherEmail, title, description, author, bookURL } =
     route.params || {};
 
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("Fetching data in BookDetailsScreen...");
-      console.log("Publisher email (from route params):", publisherEmail);
-      console.log("Logged-in user email:", email);
+  const fetchData = async () => {
+    console.log("Fetching data in BookDetailsScreen...");
+    console.log("Publisher email (from route params):", publisherEmail);
+    console.log("Logged-in user email:", email);
 
-      const db = getFirestore();
+    const db = getFirestore();
 
-      try {
-        // Fetching book owner details
-        const bookOwnerDocRef = doc(db, "users", publisherEmail);
-        console.log("Fetching book owner document for:", publisherEmail);
+    try {
+      // Fetching book owner details
+      const bookOwnerDocRef = doc(db, "users", publisherEmail);
+      console.log("Fetching book owner document for:", publisherEmail);
 
-        const bookOwnerDocSnap = await getDoc(bookOwnerDocRef);
+      const bookOwnerDocSnap = await getDoc(bookOwnerDocRef);
 
-        if (bookOwnerDocSnap.exists()) {
-          const bookOwnerData = bookOwnerDocSnap.data();
-          console.log("Book owner data retrieved:", bookOwnerData);
+      if (bookOwnerDocSnap.exists()) {
+        const bookOwnerData = bookOwnerDocSnap.data();
+        console.log("Book owner data retrieved:", bookOwnerData);
 
-          const isOwner = email === publisherEmail;
-          console.log(
-            `Is the logged-in user the owner? ${isOwner ? "Yes" : "No"}`
-          );
+        const isOwner = email === publisherEmail;
+        console.log(
+          `Is the logged-in user the owner? ${isOwner ? "Yes" : "No"}`
+        );
 
-          // Set owner state
-          setIsOwner(isOwner);
+        // Set owner state
+        setIsOwner(isOwner);
 
-          // Set username and Instagram username
-          setUsername(bookOwnerData.username || "Unknown");
-          setInstagramUsername(bookOwnerData.igUser || "Unknown");
-        } else {
-          console.log("Book owner document does not exist!");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        // Set username and Instagram username
+        setUsername(bookOwnerData.username || "Unknown");
+        setInstagramUsername(bookOwnerData.igUser || "Unknown");
+      } else {
+        console.log("Book owner document does not exist!");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-    fetchData();
-  }, [publisherEmail, email]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [publisherEmail, email])
+  );
 
   // Log whenever isOwner changes
   useEffect(() => {

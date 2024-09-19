@@ -58,7 +58,6 @@ export default function AddBookScreen({ navigation, route }) {
   const [description, setDescription] = useState("");
   const [charCount, setCharCount] = useState(0);
   const [downloadURL, setDownloadURL] = useState("");
-  console.log("pubemail: " + book.publisherEmail);
   function handleDownloadURL(url) {
     setDownloadURL(url);
   }
@@ -95,7 +94,7 @@ export default function AddBookScreen({ navigation, route }) {
                 publisherEmail: email,
               }
             );
-            navigation.goBack({ email: email });
+            navigation.goBack();
             const newBook = {
               title: title,
               author: author,

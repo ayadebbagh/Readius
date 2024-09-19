@@ -47,7 +47,7 @@ function LibraryBookComp(props) {
       title: book.title,
       author: book.author,
       description: book.description,
-      publisherEmail: book.publisherEmail, // Pass the publisher's email // Pass the logged-in email separately
+      publisherEmail: book.publisherEmail, // Pass the publisher's email2 // Pass the logged-in email separately
       bookURL: book.URL,
     });
   };

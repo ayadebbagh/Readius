@@ -32,12 +32,12 @@ import FbApp from "../Helpers/FirebaseConfig.js";
 import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { emailContext } from "../screens/SignIn.js";
+import { EmailContext } from "../Helpers/EmailContext.js";
 
 const db = getFirestore(FbApp);
 
 function BookAddComp(props) {
-  const email = useContext(emailContext);
+  const { email } = useContext(EmailContext);
   const title = props.title;
   console.log("BookAddComp received email: " + email);
   console.log("title in book comp: " + title);

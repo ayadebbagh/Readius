@@ -17,10 +17,12 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { EmailContext } from "../Helpers/EmailContext.js";
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function EditBookScreen({ navigation, route }) {
+  const { email } = useContext(EmailContext);
   const {
     title: initialTitle,
     description: initialDescription,
