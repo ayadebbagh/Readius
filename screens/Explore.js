@@ -23,10 +23,9 @@ import { EmailContext } from "../Helpers/EmailContext.js";
 
 const db = getFirestore(FbApp);
 const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 const bookWidth = 150;
 const spaceBetweenBooks = 10;
-const padding = 20; // Add padding to the calculation
+const padding = 20;
 
 const calculateNumColumns = (screenWidth, bookWidth, margin, padding) => {
   return Math.floor((screenWidth - padding * 2) / (bookWidth + margin));
@@ -54,7 +53,7 @@ export default function Explore({ navigation, route }) {
         for (const userDoc of usersSnapshot.docs) {
           const userData = userDoc.data();
           const userEmail = userData.email;
-          const username = userData.username; // Assuming username is the field name
+          const username = userData.username;
           const booksCollection = collection(db, "users", userDoc.id, "books");
           const q = query(booksCollection, orderBy("addedAt", "desc"));
           const booksSnapshot = await getDocs(q);
@@ -62,14 +61,13 @@ export default function Explore({ navigation, route }) {
           const userBooks = booksSnapshot.docs.map((doc) => ({
             id: doc.id,
             userEmail: userEmail,
-            username: username, // Add username to each book
+            username: username,
             ...doc.data(),
           }));
 
           allBooks = [...allBooks, ...userBooks];
         }
 
-        // Sort all books by addedAt
         allBooks.sort((a, b) => b.addedAt.toDate() - a.addedAt.toDate());
 
         setBooks(allBooks);
@@ -88,7 +86,7 @@ export default function Explore({ navigation, route }) {
         (book) =>
           book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.username.toLowerCase().includes(searchQuery.toLowerCase()) // Add this line
+          book.username.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredBooks(filtered);
     }

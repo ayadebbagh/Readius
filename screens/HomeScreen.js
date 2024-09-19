@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
 import LottieView from "lottie-react-native";
 import { getFirestore, doc, setDoc } from "firebase/firestore";

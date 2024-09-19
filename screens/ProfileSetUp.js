@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -31,13 +31,12 @@ import * as ImageManipulator from "expo-image-manipulator";
 import LibraryBookComp from "../Components/LibraryBookComp.js";
 import { EmailContext } from "../Helpers/EmailContext.js";
 
-// Use FbApp to get Firestore
 const db = getFirestore(FbApp);
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 const bookWidth = 150;
 const spaceBetweenBooks = 10;
-const padding = 20; // Add padding to the calculation
+const padding = 20;
 
 const calculateNumColumns = (screenWidth, bookWidth, margin, padding) => {
   return Math.floor((screenWidth - padding * 2) / (bookWidth + margin));
@@ -233,10 +232,10 @@ export default function ProfileSetUp({ navigation, route }) {
           )}
           keyExtractor={(item, index) => index.toString()}
           horizontal={false}
-          numColumns={numColumns} // Set numColumns dynamically
-          key={numColumns} // Change key to force re-render
+          numColumns={numColumns}
+          key={numColumns}
           contentContainerStyle={{
-            paddingHorizontal: padding, // Add padding to center the content
+            paddingHorizontal: padding,
           }}
           style={styles.flatlist}
         />

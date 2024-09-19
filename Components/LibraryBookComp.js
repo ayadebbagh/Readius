@@ -1,36 +1,5 @@
-import React, { useRef, useState, useEffect, useContext } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  PixelRatio,
-} from "react-native";
-import {
-  getFirestore,
-  doc,
-  collection,
-  query,
-  where,
-  getDocs,
-  updateDoc,
-  userDoc,
-  setDoc,
-  addDoc,
-} from "firebase/firestore";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import FbApp from "../Helpers/FirebaseConfig.js";
-import { Logs } from "expo";
-import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
-const db = getFirestore(FbApp);
+import React, { useContext } from "react";
+import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
 import { EmailContext } from "../Helpers/EmailContext.js";
 
 function LibraryBookComp(props) {
@@ -41,14 +10,13 @@ function LibraryBookComp(props) {
   console.log("email from librarybookcomp: " + email);
 
   const handlePress = () => {
-    console.log("Publisher email: in book comp " + book.publisherEmail); // Log the publisher's email
-    console.log("Logged-in email: in book comp " + email); // Log the logged-in email
+    console.log("Publisher email: in book comp " + book.publisherEmail);
+    console.log("Logged-in email: in book comp " + email);
     navigation.navigate("BookDetailsScreen", {
       title: book.title,
       author: book.author,
       description: book.description,
-      publisherEmail: book.publisherEmail, // Pass the publisher's email2 // Pass the logged-in email separately
-      bookURL: book.URL,
+      publisherEmail: book.publisherEmail,
     });
   };
 

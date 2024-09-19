@@ -1,26 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  TextInput,
-  Platform,
-  Button,
-  Image,
-  Alert,
-} from "react-native";
-import React, { useRef, useEffect, useState } from "react";
+import { StyleSheet, Text, View, TextInput, Alert } from "react-native";
+import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import BackgroundAnimation from "../Components/ImageBackground.js";
 import FbApp from "../Helpers/FirebaseConfig.js";
 import {
   getFirestore,
   setDoc,
   doc,
-  docRef,
   collection,
   query,
   where,
@@ -38,10 +26,8 @@ export default function SignUp({ navigation, route }) {
     const userRef = collection(db, "users");
     const usernameQuery = query(userRef, where("username", "==", username));
     const emailQuery = query(userRef, where("email", "==", email));
-    const igUserQuery = query(userRef, where("igUser", "==", igUser));
     const usernameSnapshot = await getDocs(usernameQuery);
     const emailSnapshot = await getDocs(emailQuery);
-    const igUserSnapshot = await getDocs(igUserQuery);
 
     if (!usernameSnapshot.empty || !emailSnapshot.empty) {
       return true;
@@ -104,7 +90,6 @@ export default function SignUp({ navigation, route }) {
           onPress={async () => {
             if (username && email && password && igUser) {
               try {
-                // Check if an account with the same username or email already exists
                 const existingUser = await getUserByUsernameOrEmail(
                   username,
                   email,
@@ -112,13 +97,11 @@ export default function SignUp({ navigation, route }) {
                 );
 
                 if (existingUser) {
-                  // If an account already exists, show an error message
                   Alert.alert(
                     "Error",
                     "An account with that username, email, or Instagram username already exists."
                   );
                 } else {
-                  // If no account exists, create a new account
                   const docRef = await setDoc(doc(db, "users", email), {
                     username: username,
                     email: email,

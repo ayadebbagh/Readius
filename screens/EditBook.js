@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import {
-  View,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -37,7 +36,6 @@ export default function EditBookScreen({ navigation, route }) {
     const db = getFirestore();
     const booksRef = collection(db, "users", email, "books");
 
-    // Construct query to find the document
     const q = query(
       booksRef,
       where("title", "==", initialTitle),
@@ -48,10 +46,8 @@ export default function EditBookScreen({ navigation, route }) {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        // Access the document reference
         const bookDocRef = querySnapshot.docs[0].ref;
 
-        // Update the document
         await updateDoc(bookDocRef, {
           title,
           description,

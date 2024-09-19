@@ -41,7 +41,7 @@ export default function SignIn() {
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           if (userData.password === password) {
-            setEmail(emailInput); // Set email in context
+            setEmail(emailInput);
             if (userData.hasViewedHomeScreen) {
               navigation.navigate("ProfileSetUp");
             } else {

@@ -1,58 +1,22 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  TextInput,
-  Platform,
-  Button,
-  Image,
-  Alert,
-  ScrollView,
-  Dimensions,
-} from "react-native";
-import React, { useRef, useEffect, useState, useContext } from "react";
+import { StyleSheet, Text, View, TextInput, Dimensions } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { FbApp } from "../Helpers/FirebaseConfig.js";
 import BookContext from "../Helpers/BookContext.js";
 import { emailContext } from "./ProfileSetUp.js";
 
-import {
-  getFirestore,
-  setDoc,
-  doc,
-  docRef,
-  collection,
-  query,
-  where,
-  getDocs,
-  getDoc,
-  serverTimestamp,
-} from "firebase/firestore";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import { Logs } from "expo";
-import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
+import { getFirestore, setDoc, doc, serverTimestamp } from "firebase/firestore";
 import BookAddComp from "../Components/BookAddComp.js";
 import { EmailContext } from "../Helpers/EmailContext.js";
 
 const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 const db = getFirestore(FbApp);
 
 export default function AddBookScreen({ navigation, route }) {
   const { addBook } = useContext(BookContext);
   const { email } = useContext(EmailContext);
   const [titleForBookAddComp, setTitleForBookAddComp] = useState("");
-  const [renderBookAddComp, setRenderBookAddComp] = useState(false);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");

@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -46,7 +40,6 @@ export default function BookDetailsScreen({ navigation, route }) {
     const db = getFirestore();
 
     try {
-      // Fetching book owner details
       const bookOwnerDocRef = doc(db, "users", publisherEmail);
       console.log("Fetching book owner document for:", publisherEmail);
 
@@ -60,11 +53,8 @@ export default function BookDetailsScreen({ navigation, route }) {
         console.log(
           `Is the logged-in user the owner? ${isOwner ? "Yes" : "No"}`
         );
-
-        // Set owner state
         setIsOwner(isOwner);
 
-        // Set username and Instagram username
         setUsername(bookOwnerData.username || "Unknown");
         setInstagramUsername(bookOwnerData.igUser || "Unknown");
       } else {
@@ -81,7 +71,6 @@ export default function BookDetailsScreen({ navigation, route }) {
     }, [publisherEmail, email])
   );
 
-  // Log whenever isOwner changes
   useEffect(() => {
     console.log("Is owner (current state):", isOwner);
   }, [isOwner]);
@@ -154,7 +143,7 @@ export default function BookDetailsScreen({ navigation, route }) {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between", // Ensure space between items
+            justifyContent: "space-between",
             alignItems: "center",
           }}
         >

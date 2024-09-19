@@ -4,12 +4,9 @@ import { Animated, Easing, ImageBackground } from "react-native";
 import {
   INPUT_RANGE_START,
   INPUT_RANGE_END,
-  OUTPUT_RANGE_START,
-  OUTPUT_RANGE_END,
   ANIMATION_TO_VALUE,
   ANIMATION_DURATION,
 } from "../Helpers/constants";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;

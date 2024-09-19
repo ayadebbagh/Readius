@@ -2,11 +2,8 @@ import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   View,
   StyleSheet,
-  Text,
   TouchableOpacity,
   Image,
-  Dimensions,
-  PixelRatio,
   ActivityIndicator,
 } from "react-native";
 import {
@@ -17,19 +14,14 @@ import {
   where,
   getDocs,
   updateDoc,
-  userDoc,
-  setDoc,
-  addDoc,
 } from "firebase/firestore";
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
-  orderBy,
 } from "firebase/storage";
 import FbApp from "../Helpers/FirebaseConfig.js";
-import { Logs } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { EmailContext } from "../Helpers/EmailContext.js";
