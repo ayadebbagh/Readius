@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import FbApp from "../Helpers/FirebaseConfig.js";
 import { EmailContext } from "../Helpers/EmailContext.js";
+import { createSession } from "../Helpers/AuthFunctions.js";
 
 const db = getFirestore(FbApp);
 
@@ -42,6 +43,7 @@ export default function SignIn() {
           const userData = querySnapshot.docs[0].data();
           if (userData.password === password) {
             setEmail(emailInput);
+            await createSession(emailInput);
             if (userData.hasViewedHomeScreen) {
               navigation.navigate("ProfileSetUp");
             } else {

@@ -30,6 +30,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import LibraryBookComp from "../Components/LibraryBookComp.js";
 import { EmailContext } from "../Helpers/EmailContext.js";
+import { logout } from "../Helpers/AuthFunctions.js";
 
 const db = getFirestore(FbApp);
 const screenWidth = Dimensions.get("window").width;
@@ -188,6 +189,11 @@ export default function ProfileSetUp({ navigation, route }) {
     };
   }, []);
 
+  const Logout = async () => {
+    await logout();
+    navigation.navigate("SignIn");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.roundedRectangleContainer}>
@@ -215,6 +221,13 @@ export default function ProfileSetUp({ navigation, route }) {
             style={{ width: 40, height: 40 }}
           />
         </TouchableOpacity>
+        <TouchableOpacity onPress={Logout}>
+          <Image
+            source={require("../assets/images/logout.png")}
+            style={styles.logout}
+          />
+        </TouchableOpacity>
+
         <Text style={styles.usernameText}>@{user ? user.username : ""}</Text>
       </View>
       <View style={styles.flatlistContainer}>
@@ -240,6 +253,7 @@ export default function ProfileSetUp({ navigation, route }) {
           style={styles.flatlist}
         />
       </View>
+
       <TouchableOpacity
         style={styles.homeIcon}
         onPress={() => navigation.navigate("Explore")}
@@ -278,6 +292,7 @@ const styles = StyleSheet.create({
     top: screenHeight * 0.25 - 60,
     zIndex: 1,
   },
+
   roundedRectangleContainer: {
     position: "absolute",
     top: 0,
@@ -314,6 +329,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 30,
     bottom: 30,
+    zIndex: 2,
+  },
+  logout: {
+    width: 50,
+    height: 50,
+    position: "absolute",
+    left: 120,
+    bottom: -20,
     zIndex: 2,
   },
   bookIcon: {
