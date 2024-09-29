@@ -193,8 +193,19 @@ export default function ProfileSetUp({ navigation, route }) {
   }, []);
 
   const Logout = async () => {
-    await logout();
-    navigation.navigate("SignIn");
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Logout",
+        onPress: async () => {
+          await logout();
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "SignIn" }],
+          });
+        },
+      },
+    ]);
   };
 
   const renderEmptyComponent = () => (
