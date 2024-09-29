@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, TextInput, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Dimensions,
+  Image,
+} from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -22,12 +29,19 @@ export default function AddBookScreen({ navigation, route }) {
   const [description, setDescription] = useState("");
   const [charCount, setCharCount] = useState(0);
   const [downloadURL, setDownloadURL] = useState("");
+  const styles = getDynamicStyles(screenWidth);
+
   function handleDownloadURL(url) {
     setDownloadURL(url);
   }
+
   useEffect(() => {
     console.log(`Title: ${title}`);
   }, [title]);
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView
@@ -71,6 +85,12 @@ export default function AddBookScreen({ navigation, route }) {
         >
           <Text style={styles.swapText}>Get Swapping!</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleGoBack} style={styles.arrowContainer}>
+          <Image
+            style={styles.arrow}
+            source={require("../assets/images/backArrow.png")}
+          />
+        </TouchableOpacity>
 
         <TextInput
           style={styles.TitleInput}
@@ -107,95 +127,109 @@ export default function AddBookScreen({ navigation, route }) {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    position: "relative",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#C8C2D3",
-  },
-  infoContainer: {
-    left: 25,
-    top: 440,
-    position: "absolute",
-  },
-  descriptionContainer: {
-    position: "relative",
-  },
 
-  charCount: {
-    position: "absolute",
-    right: 10,
-    bottom: 10,
-    fontSize: 12,
-    color: "#888",
-  },
-  addBookText: {
-    fontFamily: "GartSerifBold",
-    fontSize: 55,
-    color: "#2D2429",
-    left: 25,
-    top: 75,
-    position: "absolute",
-  },
-  scrollView: {
-    height: 250,
-    width: screenWidth,
-    position: "absolute",
-
-    top: 180,
-  },
-  swapButton: {
-    width: 240,
-    height: 55,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#2D2429",
-    borderRadius: 30,
-    position: "absolute",
-    bottom: 60,
-  },
-  swapText: {
-    fontFamily: "GartSerif",
-    fontSize: 24,
-    color: "#ECEFE8",
-  },
-  TitleInput: {
-    marginTop: 15,
-    fontFamily: "GartSerif",
-    fontSize: 18,
-    borderColor: "#2D2429",
-    borderWidth: 4,
-    borderRadius: 29,
-    padding: 10,
-    width: 350,
-    height: 46,
-    backgroundColor: "#ECEFE8",
-  },
-  AuthorInput: {
-    marginTop: 15,
-    fontFamily: "GartSerif",
-    fontSize: 18,
-    borderColor: "#2D2429",
-    borderWidth: 4,
-    borderRadius: 29,
-    padding: 10,
-    width: 350,
-    height: 46,
-    backgroundColor: "#ECEFE8",
-  },
-  DescriptionInput: {
-    marginTop: 15,
-    fontFamily: "GartSerif",
-    fontSize: 18,
-    borderColor: "#2D2429",
-    borderWidth: 4,
-    borderRadius: 29,
-    padding: 10,
-    width: 350,
-    height: 140,
-    backgroundColor: "#ECEFE8",
-    textAlignVertical: "top",
-  },
-});
+const getDynamicStyles = (screenWidth) => {
+  const isSmallScreen = screenWidth < 380;
+  return StyleSheet.create({
+    container: {
+      position: "relative",
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#C8C2D3",
+    },
+    infoContainer: {
+      left: 25,
+      top: 440,
+      position: "absolute",
+    },
+    descriptionContainer: {
+      position: "relative",
+    },
+    charCount: {
+      position: "absolute",
+      right: 10,
+      bottom: 10,
+      fontSize: 12,
+      color: "#888",
+    },
+    addBookText: {
+      fontFamily: "GartSerifBold",
+      fontSize: 55,
+      color: "#2D2429",
+      left: 25,
+      top: isSmallScreen ? 30 : 75,
+      position: "absolute",
+    },
+    scrollView: {
+      height: 250,
+      width: screenWidth,
+      position: "absolute",
+      top: 180,
+    },
+    swapButton: {
+      width: 200,
+      height: 55,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#2D2429",
+      borderRadius: 30,
+      position: "absolute",
+      bottom: isSmallScreen ? 20 : 60,
+    },
+    swapText: {
+      fontFamily: "GartSerif",
+      fontSize: 24,
+      color: "#ECEFE8",
+    },
+    TitleInput: {
+      marginTop: 15,
+      fontFamily: "GartSerif",
+      fontSize: isSmallScreen ? 14 : 18,
+      borderColor: "#2D2429",
+      borderWidth: 4,
+      borderRadius: 29,
+      padding: 10,
+      width: 350,
+      height: isSmallScreen ? 40 : 46,
+      backgroundColor: "#ECEFE8",
+    },
+    AuthorInput: {
+      marginTop: 15,
+      fontFamily: "GartSerif",
+      fontSize: isSmallScreen ? 14 : 18,
+      borderColor: "#2D2429",
+      borderWidth: 4,
+      borderRadius: 29,
+      padding: 10,
+      width: 350,
+      height: isSmallScreen ? 40 : 46,
+      backgroundColor: "#ECEFE8",
+    },
+    DescriptionInput: {
+      marginTop: 15,
+      fontFamily: "GartSerif",
+      fontSize: isSmallScreen ? 14 : 18,
+      borderColor: "#2D2429",
+      borderWidth: 4,
+      borderRadius: 29,
+      padding: 10,
+      width: 350,
+      height: isSmallScreen ? 120 : 140,
+      backgroundColor: "#ECEFE8",
+      textAlignVertical: "top",
+    },
+    arrowContainer: {
+      marginBottom: 0,
+      alignItems: "center",
+      justifyContent: "center",
+      position: "absolute",
+      bottom: isSmallScreen ? 33 : 73,
+      left: 15,
+    },
+    arrow: {
+      width: 35,
+      height: 30,
+    },
+  });
+};

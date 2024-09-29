@@ -43,12 +43,116 @@ const calculateNumColumns = (screenWidth, bookWidth, margin, padding) => {
   return Math.floor((screenWidth - padding * 2) / (bookWidth + margin));
 };
 
+const getDynamicStyles = (screenWidth) => {
+  const isSmallScreen = screenWidth < 375;
+  return StyleSheet.create({
+    container: {
+      position: "relative",
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#ECEFE8",
+    },
+    profilePic: {
+      height: 120,
+      width: 120,
+      borderRadius: 125,
+      position: "absolute",
+      top: screenHeight * 0.25 - 60,
+      zIndex: 1,
+    },
+
+    roundedRectangleContainer: {
+      position: "absolute",
+      top: -7,
+      alignItems: "center",
+      width: "100%",
+    },
+    roundedRectangle: {
+      backgroundColor: "#C8C2D3",
+      height: screenHeight * 0.25,
+      width: screenWidth,
+      borderRadius: 60,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    plusSign: {
+      height: 30,
+      width: 30,
+      marginTop: 15,
+      marginLeft: 70,
+      zIndex: 2,
+    },
+    plusSignrect: {
+      height: 30,
+      width: 30,
+      marginTop: 15,
+      marginLeft: 70,
+      zIndex: 2,
+    },
+    usernameText: {
+      marginTop: 15,
+      fontFamily: "GartSerifBold",
+      fontSize: 20,
+      color: "#2D2429",
+    },
+    roundedRectangleImage: {
+      width: "100%",
+      height: "100%",
+      borderRadius: 20,
+    },
+    homeIcon: {
+      position: "absolute",
+      left: 30,
+      bottom: 30,
+      zIndex: 2,
+    },
+    logout: {
+      width: 60,
+      height: 50,
+      position: "absolute",
+      left: 110,
+      bottom: -20,
+      zIndex: 2,
+      fontFamily: "GartSerifBold",
+      fontSize: 17,
+      color: "#2D2429",
+    },
+    bookIcon: {
+      position: "absolute",
+      right: 30,
+      bottom: 30,
+      zIndex: 2,
+    },
+    flatlistContainer: {
+      flex: 1,
+      marginTop: screenHeight * 0.25 + 120,
+      alignItems: "center",
+    },
+    flatlist: {
+      width: "100%",
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    emptyText: {
+      color: "#9388A6",
+      fontSize: 16,
+      fontFamily: "GartSerif",
+      opacity: 0.5,
+    },
+  });
+};
+
 export default function ProfileSetUp({ navigation, route }) {
   const [rectangleImageUri, setRectangleImageUri] = useState(null);
   const [user, setUser] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const [books, setBooks] = useState([]);
   const { email } = useContext(EmailContext);
+  const styles = getDynamicStyles(screenWidth);
   const [numColumns, setNumColumns] = useState(
     calculateNumColumns(screenWidth, bookWidth, spaceBetweenBooks, padding)
   );
@@ -194,6 +298,12 @@ export default function ProfileSetUp({ navigation, route }) {
     navigation.navigate("SignIn");
   };
 
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>Click on the book icon to add a book</Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.roundedRectangleContainer}>
@@ -215,6 +325,7 @@ export default function ProfileSetUp({ navigation, route }) {
             onLoad={() => console.log("Image loaded")}
           />
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.plusSign} onPress={pickImagepfp}>
           <Image
             source={require("../assets/images/plusSign.png")}
@@ -222,10 +333,7 @@ export default function ProfileSetUp({ navigation, route }) {
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={Logout}>
-          <Image
-            source={require("../assets/images/logout.png")}
-            style={styles.logout}
-          />
+          <Text style={styles.logout}>Logout</Text>
         </TouchableOpacity>
 
         <Text style={styles.usernameText}>@{user ? user.username : ""}</Text>
@@ -251,6 +359,7 @@ export default function ProfileSetUp({ navigation, route }) {
             paddingHorizontal: padding,
           }}
           style={styles.flatlist}
+          ListEmptyComponent={renderEmptyComponent}
         />
       </View>
 
@@ -314,6 +423,13 @@ const styles = StyleSheet.create({
     marginLeft: 70,
     zIndex: 2,
   },
+  plusSignrect: {
+    height: 30,
+    width: 30,
+    marginTop: 15,
+    marginLeft: 70,
+    zIndex: 2,
+  },
   usernameText: {
     marginTop: 15,
     fontFamily: "GartSerifBold",
@@ -332,12 +448,15 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   logout: {
-    width: 50,
+    width: 60,
     height: 50,
     position: "absolute",
-    left: 120,
+    left: 110,
     bottom: -20,
     zIndex: 2,
+    fontFamily: "GartSerifBold",
+    fontSize: 17,
+    color: "#2D2429",
   },
   bookIcon: {
     position: "absolute",
@@ -352,5 +471,16 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     width: "100%",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "#9388A6",
+    fontSize: 16,
+    fontFamily: "GartSerif",
+    opacity: 0.5,
   },
 });

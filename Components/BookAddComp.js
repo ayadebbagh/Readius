@@ -143,8 +143,8 @@ export default React.memo(BookAddComp);
 
 const styles = StyleSheet.create({
   rectangle: {
-    width: 245,
-    height: 245,
+    width: 235,
+    height: 235,
     backgroundColor: "#ECEFE8",
     borderColor: "#2D2429",
     borderWidth: 4,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   Image,
   TextInput,
   SafeAreaView,
+  Text,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import {
@@ -41,39 +42,40 @@ export default function Explore({ navigation, route }) {
   const [numColumns, setNumColumns] = useState(
     calculateNumColumns(screenWidth, bookWidth, spaceBetweenBooks, padding)
   );
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchAllBooks = async () => {
+    const usersCollection = collection(db, "users");
+    const usersSnapshot = await getDocs(usersCollection);
+
+    let allBooks = [];
+
+    for (const userDoc of usersSnapshot.docs) {
+      const userData = userDoc.data();
+      const userEmail = userData.email;
+      const username = userData.username;
+      const booksCollection = collection(db, "users", userDoc.id, "books");
+      const q = query(booksCollection, orderBy("addedAt", "desc"));
+      const booksSnapshot = await getDocs(q);
+
+      const userBooks = booksSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        userEmail: userEmail,
+        username: username,
+        ...doc.data(),
+      }));
+
+      allBooks = [...allBooks, ...userBooks];
+    }
+
+    allBooks.sort((a, b) => b.addedAt.toDate() - a.addedAt.toDate());
+
+    setBooks(allBooks);
+    setFilteredBooks(allBooks);
+  };
 
   useFocusEffect(
-    React.useCallback(() => {
-      const fetchAllBooks = async () => {
-        const usersCollection = collection(db, "users");
-        const usersSnapshot = await getDocs(usersCollection);
-
-        let allBooks = [];
-
-        for (const userDoc of usersSnapshot.docs) {
-          const userData = userDoc.data();
-          const userEmail = userData.email;
-          const username = userData.username;
-          const booksCollection = collection(db, "users", userDoc.id, "books");
-          const q = query(booksCollection, orderBy("addedAt", "desc"));
-          const booksSnapshot = await getDocs(q);
-
-          const userBooks = booksSnapshot.docs.map((doc) => ({
-            id: doc.id,
-            userEmail: userEmail,
-            username: username,
-            ...doc.data(),
-          }));
-
-          allBooks = [...allBooks, ...userBooks];
-        }
-
-        allBooks.sort((a, b) => b.addedAt.toDate() - a.addedAt.toDate());
-
-        setBooks(allBooks);
-        setFilteredBooks(allBooks);
-      };
-
+    useCallback(() => {
       fetchAllBooks();
     }, [])
   );
@@ -110,6 +112,18 @@ export default function Explore({ navigation, route }) {
     };
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchAllBooks();
+    setRefreshing(false);
+  };
+
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>No books found.</Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
@@ -131,10 +145,13 @@ export default function Explore({ navigation, route }) {
         )}
         keyExtractor={(item) => `${item.userEmail}-${item.id}`}
         horizontal={false}
-        numColumns={numColumns} // Set numColumns dynamically
-        key={numColumns} // Change key to force re-render
+        numColumns={numColumns}
+        key={numColumns}
         contentContainerStyle={{ paddingHorizontal: spaceBetweenBooks / 2 }}
         style={styles.flatlist}
+        ListEmptyComponent={renderEmptyComponent}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
       <TouchableOpacity
         style={styles.profileIcon}
@@ -187,5 +204,15 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 30,
     zIndex: 2,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "#9388A6",
+    fontSize: 16,
+    fontFamily: "GartSerif",
   },
 });
