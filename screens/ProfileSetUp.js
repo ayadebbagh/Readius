@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   FlatList,
+  Alert,
 } from "react-native";
 import {
   getFirestore,
@@ -41,109 +42,6 @@ const padding = 20;
 
 const calculateNumColumns = (screenWidth, bookWidth, margin, padding) => {
   return Math.floor((screenWidth - padding * 2) / (bookWidth + margin));
-};
-
-const getDynamicStyles = (screenWidth) => {
-  const isSmallScreen = screenWidth < 375;
-  return StyleSheet.create({
-    container: {
-      position: "relative",
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#ECEFE8",
-    },
-    profilePic: {
-      height: 120,
-      width: 120,
-      borderRadius: 125,
-      position: "absolute",
-      top: screenHeight * 0.25 - 60,
-      zIndex: 1,
-    },
-
-    roundedRectangleContainer: {
-      position: "absolute",
-      top: -7,
-      alignItems: "center",
-      width: "100%",
-    },
-    roundedRectangle: {
-      backgroundColor: "#C8C2D3",
-      height: screenHeight * 0.25,
-      width: screenWidth,
-      borderRadius: 60,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    plusSign: {
-      height: 30,
-      width: 30,
-      marginTop: 15,
-      marginLeft: 70,
-      zIndex: 2,
-    },
-    plusSignrect: {
-      height: 30,
-      width: 30,
-      marginTop: 15,
-      marginLeft: 70,
-      zIndex: 2,
-    },
-    usernameText: {
-      marginTop: 15,
-      fontFamily: "GartSerifBold",
-      fontSize: 20,
-      color: "#2D2429",
-    },
-    roundedRectangleImage: {
-      width: "100%",
-      height: "100%",
-      borderRadius: 20,
-    },
-    homeIcon: {
-      position: "absolute",
-      left: 30,
-      bottom: 30,
-      zIndex: 2,
-    },
-    logout: {
-      width: 60,
-      height: 50,
-      position: "absolute",
-      left: 110,
-      bottom: -20,
-      zIndex: 2,
-      fontFamily: "GartSerifBold",
-      fontSize: 17,
-      color: "#2D2429",
-    },
-    bookIcon: {
-      position: "absolute",
-      right: 30,
-      bottom: 30,
-      zIndex: 2,
-    },
-    flatlistContainer: {
-      flex: 1,
-      marginTop: screenHeight * 0.25 + 120,
-      alignItems: "center",
-    },
-    flatlist: {
-      width: "100%",
-    },
-    emptyContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    emptyText: {
-      color: "#9388A6",
-      fontSize: 16,
-      fontFamily: "GartSerif",
-      opacity: 0.5,
-    },
-  });
 };
 
 export default function ProfileSetUp({ navigation, route }) {
@@ -256,6 +154,7 @@ export default function ProfileSetUp({ navigation, route }) {
       }
     );
   };
+
   useEffect(() => {
     async function fetchUserData() {
       const usersRef = collection(db, "users");
@@ -319,11 +218,15 @@ export default function ProfileSetUp({ navigation, route }) {
           style={styles.roundedRectangle}
           onPress={pickImageRectangle}
         >
-          <Image
-            source={{ uri: rectangleImageUri }}
-            style={styles.roundedRectangleImage}
-            onLoad={() => console.log("Image loaded")}
-          />
+          {rectangleImageUri ? (
+            <Image
+              source={{ uri: rectangleImageUri }}
+              style={styles.roundedRectangleImage}
+              onLoad={() => console.log("Image loaded")}
+            />
+          ) : (
+            <Text style={styles.addBannerText}>Click to add a banner</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.plusSign} onPress={pickImagepfp}>
@@ -385,102 +288,112 @@ export default function ProfileSetUp({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    position: "relative",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ECEFE8",
-  },
-  profilePic: {
-    height: 120,
-    width: 120,
-    borderRadius: 125,
-    position: "absolute",
-    top: screenHeight * 0.25 - 60,
-    zIndex: 1,
-  },
+const getDynamicStyles = (screenWidth) => {
+  const isSmallScreen = screenWidth < 380;
+  return StyleSheet.create({
+    container: {
+      position: "relative",
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#ECEFE8",
+    },
+    profilePic: {
+      height: 120,
+      width: 120,
+      borderRadius: 125,
+      position: "absolute",
+      top: screenHeight * 0.25 - 60,
+      zIndex: 1,
+    },
 
-  roundedRectangleContainer: {
-    position: "absolute",
-    top: 0,
-    alignItems: "center",
-    width: "100%",
-  },
-  roundedRectangle: {
-    backgroundColor: "#C8C2D3",
-    height: screenHeight * 0.25,
-    width: screenWidth,
-    borderRadius: 60,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  plusSign: {
-    height: 30,
-    width: 30,
-    marginTop: 15,
-    marginLeft: 70,
-    zIndex: 2,
-  },
-  plusSignrect: {
-    height: 30,
-    width: 30,
-    marginTop: 15,
-    marginLeft: 70,
-    zIndex: 2,
-  },
-  usernameText: {
-    marginTop: 15,
-    fontFamily: "GartSerifBold",
-    fontSize: 20,
-    color: "#2D2429",
-  },
-  roundedRectangleImage: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 20,
-  },
-  homeIcon: {
-    position: "absolute",
-    left: 30,
-    bottom: 30,
-    zIndex: 2,
-  },
-  logout: {
-    width: 60,
-    height: 50,
-    position: "absolute",
-    left: 110,
-    bottom: -20,
-    zIndex: 2,
-    fontFamily: "GartSerifBold",
-    fontSize: 17,
-    color: "#2D2429",
-  },
-  bookIcon: {
-    position: "absolute",
-    right: 30,
-    bottom: 30,
-    zIndex: 2,
-  },
-  flatlistContainer: {
-    flex: 1,
-    marginTop: screenHeight * 0.25 + 120,
-    alignItems: "center",
-  },
-  flatlist: {
-    width: "100%",
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  emptyText: {
-    color: "#9388A6",
-    fontSize: 16,
-    fontFamily: "GartSerif",
-    opacity: 0.5,
-  },
-});
+    roundedRectangleContainer: {
+      position: "absolute",
+      top: 0,
+      alignItems: "center",
+      width: "100%",
+    },
+    roundedRectangle: {
+      backgroundColor: "#C8C2D3",
+      height: isSmallScreen ? screenHeight * 0.3 : screenHeight * 0.25,
+      width: screenWidth,
+      borderRadius: 60,
+      top: isSmallScreen ? -20 : 0,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    plusSign: {
+      height: 30,
+      width: 30,
+      marginTop: isSmallScreen ? -5 : 15,
+      marginLeft: 70,
+      zIndex: 2,
+    },
+    plusSignrect: {
+      height: 30,
+      width: 30,
+      marginTop: 15,
+      marginLeft: 70,
+      zIndex: 2,
+    },
+    usernameText: {
+      marginTop: 15,
+      fontFamily: "GartSerifBold",
+      fontSize: 20,
+      color: "#2D2429",
+    },
+    roundedRectangleImage: {
+      width: "100%",
+      height: "100%",
+      borderRadius: 20,
+    },
+    addBannerText: {
+      color: "#2D2429",
+      opacity: 0.5,
+      fontSize: 20,
+      fontFamily: "GartSerifBold",
+    },
+    homeIcon: {
+      position: "absolute",
+      left: 30,
+      bottom: 30,
+      zIndex: 2,
+    },
+    logout: {
+      width: 60,
+      height: 50,
+      position: "absolute",
+      left: 110,
+      bottom: -20,
+      zIndex: 2,
+      fontFamily: "GartSerifBold",
+      fontSize: 17,
+      color: "#2D2429",
+    },
+    bookIcon: {
+      position: "absolute",
+      right: 30,
+      bottom: 30,
+      zIndex: 2,
+    },
+    flatlistContainer: {
+      flex: 1,
+      marginTop: screenHeight * 0.25 + 120,
+      alignItems: "center",
+    },
+    flatlist: {
+      width: "100%",
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    emptyText: {
+      color: "#9388A6",
+      fontSize: 16,
+      fontFamily: "GartSerif",
+      opacity: 0.5,
+    },
+  });
+};

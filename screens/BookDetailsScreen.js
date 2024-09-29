@@ -29,8 +29,9 @@ export default function BookDetailsScreen({ navigation, route }) {
   const [instagramUsername, setInstagramUsername] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const { email } = useContext(EmailContext);
-  const { publisherEmail, title, description, author, bookURL } =
-    route.params || {};
+  const { publisherEmail, title, description, author } = route.params || {};
+  const [bookURL, setBookURL] = useState(null);
+  const styles = getDynamicStyles(screenWidth);
 
   const fetchData = async () => {
     console.log("Fetching data in BookDetailsScreen...");
@@ -57,6 +58,9 @@ export default function BookDetailsScreen({ navigation, route }) {
 
         setUsername(bookOwnerData.username || "Unknown");
         setInstagramUsername(bookOwnerData.igUser || "Unknown");
+
+        // Set the bookURL directly from bookOwnerData
+        setBookURL(bookOwnerData.booksPicture);
       } else {
         console.log("Book owner document does not exist!");
       }
@@ -74,6 +78,10 @@ export default function BookDetailsScreen({ navigation, route }) {
   useEffect(() => {
     console.log("Is owner (current state):", isOwner);
   }, [isOwner]);
+
+  useEffect(() => {
+    console.log("Book URL:", bookURL);
+  }, [bookURL]);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -138,7 +146,15 @@ export default function BookDetailsScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: bookURL }} style={styles.bookImage} />
+      {bookURL ? (
+        <Image
+          source={{ uri: bookURL }}
+          style={styles.bookImage}
+          onError={(error) => console.log("Image loading error:", error)}
+        />
+      ) : (
+        <Text>Loading image...</Text>
+      )}
       <View style={styles.contentContainer}>
         <View
           style={{
@@ -185,72 +201,75 @@ export default function BookDetailsScreen({ navigation, route }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ECEFE8",
-  },
-  bookImage: {
-    width: screenWidth,
-    height: screenWidth,
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  usernameContainer: {
-    alignItems: "flex-end",
-    marginBottom: 10,
-  },
-  usernameText: {
-    color: "#2D2429",
-    fontSize: 20,
-    fontFamily: "GartSerifBold",
-  },
-  textContainer: {
-    flex: 1,
-  },
-  titleText: {
-    color: "#2D2429",
-    fontSize: 36,
-    fontFamily: "GartSerif",
-    marginBottom: 10,
-  },
-  authorText: {
-    color: "#9388A6",
-    fontSize: 30,
-    fontFamily: "GartSerif",
-    marginBottom: 10,
-  },
-  descriptionText: {
-    color: "#625874",
-    fontSize: 16,
-    fontFamily: "GartSerif",
-  },
-  arrowContainer: {
-    alignItems: "flex-start",
-    marginBottom: 10,
-  },
-  arrow: {
-    width: 30,
-    height: 30,
-  },
-  ownerActions: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 20,
-  },
-  actionButton: {
-    backgroundColor: "#2D2429",
-    padding: 15,
-    borderRadius: 30,
-    paddingRight: 30,
-    paddingLeft: 30,
-  },
-  actionButtonText: {
-    color: "#ECEFE8",
-    fontSize: 16,
-    fontFamily: "GartSerif",
-  },
-});
+const getDynamicStyles = (screenWidth) => {
+  const isSmallScreen = screenWidth < 380;
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#ECEFE8",
+    },
+    bookImage: {
+      width: screenWidth,
+      height: isSmallScreen ? screenWidth * 0.75 : screenWidth,
+      resizeMode: "cover",
+    },
+    contentContainer: {
+      flex: 1,
+      padding: 20,
+    },
+    usernameContainer: {
+      alignItems: "flex-end",
+      marginBottom: 10,
+    },
+    usernameText: {
+      color: "#2D2429",
+      fontSize: 20,
+      fontFamily: "GartSerifBold",
+    },
+    textContainer: {
+      flex: 1,
+    },
+    titleText: {
+      color: "#2D2429",
+      fontSize: 36,
+      fontFamily: "GartSerif",
+      marginBottom: 10,
+    },
+    authorText: {
+      color: "#9388A6",
+      fontSize: 30,
+      fontFamily: "GartSerif",
+      marginBottom: 10,
+    },
+    descriptionText: {
+      color: "#625874",
+      fontSize: 16,
+      fontFamily: "GartSerif",
+    },
+    arrowContainer: {
+      alignItems: "flex-start",
+      marginBottom: 10,
+    },
+    arrow: {
+      width: 35,
+      height: 30,
+    },
+    ownerActions: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      marginTop: 20,
+    },
+    actionButton: {
+      backgroundColor: "#2D2429",
+      padding: 15,
+      borderRadius: 30,
+      paddingRight: 30,
+      paddingLeft: 30,
+    },
+    actionButtonText: {
+      color: "#ECEFE8",
+      fontSize: 16,
+      fontFamily: "GartSerif",
+    },
+  });
+};
