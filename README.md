@@ -48,7 +48,6 @@ Happy swapping!
 - [ ] Implement dark mode for better night-time viewing
 - [ ] Improve image quality while maintaining efficient database storage
 - [ ] Enhance error handling, particularly for cases when users don't add an information to book listings
-- [ ] Add user authentication and profiles to replace Instagram messaging
 - [ ] Implement in-app messaging system
 
 ## Known Issues
