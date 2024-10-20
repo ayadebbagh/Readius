@@ -58,9 +58,26 @@ export default function BookDetailsScreen({ navigation, route }) {
 
         setUsername(bookOwnerData.username || "Unknown");
         setInstagramUsername(bookOwnerData.igUser || "Unknown");
+        const booksCollection = collection(
+          db,
+          "users",
+          publisherEmail,
+          "books"
+        );
+        const q = query(
+          booksCollection,
+          where("title", "==", title),
+          where("author", "==", author)
+        );
+        const booksSnapshot = await getDocs(q);
 
-        // Set the bookURL directly from bookOwnerData
-        setBookURL(bookOwnerData.booksPicture);
+        if (!booksSnapshot.empty) {
+          const bookDoc = booksSnapshot.docs[0];
+          const bookData = bookDoc.data();
+          setBookURL(bookData.URL); // Use the URL field
+        } else {
+          console.log("Book not found");
+        }
       } else {
         console.log("Book owner document does not exist!");
       }
